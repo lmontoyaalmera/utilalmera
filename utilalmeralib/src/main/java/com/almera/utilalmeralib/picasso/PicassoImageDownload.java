@@ -38,7 +38,7 @@ public class PicassoImageDownload implements Html.ImageGetter {
     public Drawable getDrawable(final String source) {
         final BitmapDrawablePlaceHolder drawable = new BitmapDrawablePlaceHolder();
 
-        ArchivosUtil.descargarImagen(source, context, idFile + "_" + ArchivosUtil.getNameFile(source + ""));
+        ArchivosUtil.downloadImageToLocalPrivate(source, context, idFile + "_" + ArchivosUtil.getNameFile(source + ""));
         return drawable;
     }
 
