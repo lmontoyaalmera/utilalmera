@@ -163,6 +163,30 @@ public class ArchivosUtil {
     public static void loadImageFromDisk(ImageView v, Context context, String myImageName) {
         v.setImageBitmap(loadImageBitmap(context, myImageName));
     }
+    public static Bitmap loadImageBitmap(Context context, String imageName) {
+        Bitmap bitmap = null;
+        FileInputStream fiStream;
+        try {
+            fiStream = context.openFileInput(imageName);
+            bitmap = BitmapFactory.decodeStream(fiStream);
+            WindowManager wm = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
+            Display display = wm.getDefaultDisplay();
+            DisplayMetrics metrics = new DisplayMetrics();
+            display.getMetrics(metrics);
+            int width = metrics.widthPixels;
+            int height = metrics.heightPixels;
+
+            if (width < bitmap.getWidth() && height < bitmap.getHeight()) {
+                bitmap = Bitmap.createScaledBitmap(bitmap, width, height, false);
+            }
+
+            fiStream.close();
+        } catch (Exception e) {
+            Log.d("saveImage", "Exception 3, Something went wrong!");
+            e.printStackTrace();
+        }
+        return bitmap;
+    }
 
 
 
@@ -595,30 +619,7 @@ public class ArchivosUtil {
 
 
 
-    public static Bitmap loadImageBitmap(Context context, String imageName) {
-        Bitmap bitmap = null;
-        FileInputStream fiStream;
-        try {
-            fiStream = context.openFileInput(imageName);
-            bitmap = BitmapFactory.decodeStream(fiStream);
-            WindowManager wm = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
-            Display display = wm.getDefaultDisplay();
-            DisplayMetrics metrics = new DisplayMetrics();
-            display.getMetrics(metrics);
-            int width = metrics.widthPixels;
-            int height = metrics.heightPixels;
 
-            if (width < bitmap.getWidth() && height < bitmap.getHeight()) {
-                bitmap = Bitmap.createScaledBitmap(bitmap, width, height, false);
-            }
-
-            fiStream.close();
-        } catch (Exception e) {
-            Log.d("saveImage", "Exception 3, Something went wrong!");
-            e.printStackTrace();
-        }
-        return bitmap;
-    }
 
 
 
