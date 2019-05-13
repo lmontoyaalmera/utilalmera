@@ -1,4 +1,4 @@
-package com.almera.utilalmeralib.util;
+package com.almera.utilalmeralib.viewUtil;
 
 import android.app.Activity;
 import android.content.Context;
