@@ -26,11 +26,11 @@ import java.util.Comparator;
  * @version 2013-12-11
  * @author paulburke (ipaulpro)
  */
-public class FileUtil {
-    private FileUtil() {} //private constructor to enforce Singleton pattern
+public class LibFileUtil {
+    private LibFileUtil() {} //private constructor to enforce Singleton pattern
 
     /** TAG for log messages. */
-    static final String TAG = "FileUtil";
+    static final String TAG = "LibFileUtil";
     private static final boolean DEBUG = false; // Set to true to enable logging
 
     public static final String MIME_TYPE_AUDIO = "audio/*";
@@ -144,11 +144,11 @@ public class FileUtil {
 
     /**
      * @param uri The Uri to check.
-     * @return Whether the Uri authority is {@link LocalStorageProvider}.
+     * @return Whether the Uri authority is {@link LibLocalStorageProvider}.
      * @author paulburke
      */
     public static boolean isLocalStorageDocument(Uri uri) {
-        return LocalStorageProvider.AUTHORITY.equals(uri.getAuthority());
+        return LibLocalStorageProvider.AUTHORITY.equals(uri.getAuthority());
     }
 
     /**
@@ -275,7 +275,7 @@ public class FileUtil {
 
         // DocumentProvider
         if (isKitKat && DocumentsContract.isDocumentUri(context, uri)) {
-            // LocalStorageProvider
+            // LibLocalStorageProvider
             if (isLocalStorageDocument(uri)) {
                 // The path is the id
                 return DocumentsContract.getDocumentId(uri);
@@ -471,7 +471,7 @@ public class FileUtil {
                                 MediaStore.Video.Thumbnails.MINI_KIND,
                                 null);
                     }
-                    else if (mimeType.contains(FileUtil.MIME_TYPE_IMAGE)) {
+                    else if (mimeType.contains(LibFileUtil.MIME_TYPE_IMAGE)) {
                         bm = MediaStore.Images.Thumbnails.getThumbnail(
                                 resolver,
                                 id,

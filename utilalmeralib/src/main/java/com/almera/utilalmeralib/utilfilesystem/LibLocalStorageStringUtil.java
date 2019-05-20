@@ -7,7 +7,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.FileReader;
 
-public class LocalStorageStringUtil {
+public class LibLocalStorageStringUtil {
 
     public static boolean inLocalStorage(String filename, String folder, Context context) {
         File file = new File(context.getFilesDir() + "/" + folder + filename);

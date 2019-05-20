@@ -9,22 +9,22 @@ import android.text.Html;
 import android.util.DisplayMetrics;
 import android.widget.TextView;
 
-import com.almera.utilalmeralib.archivosutil.ArchivosUtil;
+import com.almera.utilalmeralib.archivosutil.LibArchivosUtil;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Target;
 
-public class PicassoImageGetter implements Html.ImageGetter {
+public class LibPicassoImageGetter implements Html.ImageGetter {
 
     private TextView textView = null;
     private Activity context;
     private String idFile;
 
 
-    public PicassoImageGetter(Activity context) {
+    public LibPicassoImageGetter(Activity context) {
         this.context = context;
     }
 
-    public PicassoImageGetter(TextView target, Activity context, String idFile) {
+    public LibPicassoImageGetter(TextView target, Activity context, String idFile) {
         textView = target;
         this.context = context;
         this.idFile=idFile;
@@ -37,7 +37,7 @@ public class PicassoImageGetter implements Html.ImageGetter {
             @Override
             public void run() {
                 Picasso.with(context)
-                        .load(ArchivosUtil.cargarArchivoFileName(idFile+"_"+ArchivosUtil.getNameFile(source), context))
+                        .load(LibArchivosUtil.cargarArchivoFileName(idFile+"_"+ LibArchivosUtil.getNameFile(source), context))
                         .into(drawable);
             }
         });

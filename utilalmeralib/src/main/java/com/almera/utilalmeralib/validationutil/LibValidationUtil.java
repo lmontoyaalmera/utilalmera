@@ -4,7 +4,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.regex.Pattern;
 
-public class ValidationUtil {
+public class LibValidationUtil {
     /**
      * @param nombre
      * @param pattern

@@ -1,5 +1,5 @@
 package com.almera.utilalmeralib.picasso;
 
-public interface FinishDowload {
+public interface LibFinishDowload {
     void onFinish(Boolean status);
 }

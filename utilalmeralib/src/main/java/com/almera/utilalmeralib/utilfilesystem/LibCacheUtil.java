@@ -8,7 +8,7 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 
-public class CacheUtil {
+public class LibCacheUtil {
 
     public static boolean inCache(String filename, String folder, Context context) {
         File file= new File(context.getCacheDir(), folder);

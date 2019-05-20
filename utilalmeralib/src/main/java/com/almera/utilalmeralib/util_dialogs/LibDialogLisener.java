@@ -1,6 +1,6 @@
 package com.almera.utilalmeralib.util_dialogs;
 
-public interface DialogLisener {
+public interface LibDialogLisener {
     void hideDialog();
     void showDialog();
 }

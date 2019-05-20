@@ -6,8 +6,8 @@ import android.text.Html;
 import android.text.Spannable;
 import android.widget.TextView;
 
-import com.almera.utilalmeralib.picasso.PicassoImageGetter;
-import com.almera.utilalmeralib.picasso.PicassoImageDownload;
+import com.almera.utilalmeralib.picasso.LibPicassoImageGetter;
+import com.almera.utilalmeralib.picasso.LibPicassoImageDownload;
 
 public class MainActivity extends AppCompatActivity {
     private TextView imagenGetter;
@@ -22,13 +22,13 @@ public class MainActivity extends AppCompatActivity {
     public void picassoGetter() {
         final String idiamge = "oe_id";
         imagenGetter = findViewById(R.id.picassogetter);
-        PicassoImageGetter imageGetter = new PicassoImageGetter(imagenGetter, MainActivity.this, idiamge);
+        LibPicassoImageGetter imageGetter = new LibPicassoImageGetter(imagenGetter, MainActivity.this, idiamge);
         //String html1="<p> </p>\r\n\r\n<h1>Hola mundo<\/h1>\r\n\r\n<p><img alt=\"\" src=\"http:\/\/192.168.1.28\/sgi\/tmp\/uploads\/almera_pruebasLOCAL\/download.jpeg\" style=\"width: 284px; height: 177px;\" \/><\/p>\r\n";
         final String html1 = "<p> </p>\r\n\r\n<h1>Picasso Campos Etiqueta<\\/h1>\r\n\r\n<p><img alt=\"\" src=\"http://192.168.1.28/sgi/tmp/uploads/almera_pruebasLOCAL/download.jpeg\" style=\"width: 284px; height: 177px;\" /></p>\r\n";
         new Thread(new Runnable() {
             @Override
             public void run() {
-                PicassoImageDownload imageGetter = new PicassoImageDownload(getApplicationContext(),html1,idiamge);
+                LibPicassoImageDownload imageGetter = new LibPicassoImageDownload(getApplicationContext(),html1,idiamge);
             }
         }
         ).start();

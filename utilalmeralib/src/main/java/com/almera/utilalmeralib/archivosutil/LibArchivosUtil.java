@@ -1,12 +1,9 @@
 package com.almera.utilalmeralib.archivosutil;
 
 import android.app.DownloadManager;
-import android.app.ProgressDialog;
 import android.content.Context;
-import android.content.ContextWrapper;
 import android.content.Intent;
 import android.content.res.Resources;
-import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
@@ -14,8 +11,6 @@ import android.graphics.drawable.Drawable;
 import android.graphics.drawable.PictureDrawable;
 import android.net.Uri;
 import android.os.AsyncTask;
-import android.os.Environment;
-import android.provider.MediaStore;
 import android.support.v4.content.FileProvider;
 import android.support.v7.widget.AppCompatTextView;
 import android.text.Html;
@@ -29,30 +24,24 @@ import android.webkit.MimeTypeMap;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.almera.utilalmeralib.fileChooser.FileUtil;
-import com.almera.utilalmeralib.picasso.FinishDowload;
+import com.almera.utilalmeralib.fileChooser.LibFileUtil;
+import com.almera.utilalmeralib.picasso.LibFinishDowload;
 import com.almera.utilalmeralib.picasso.ImageDownload;
-import com.almera.utilalmeralib.picasso.PicassoImageDownload;
-import com.almera.utilalmeralib.picasso.PicassoImageGetter;
+import com.almera.utilalmeralib.picasso.LibPicassoImageDownload;
 import com.larvalabs.svgandroid.SVG;
 import com.larvalabs.svgandroid.SVGParser;
 
 import org.apache.commons.io.FileUtils;
 
-import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.OutputStream;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.List;
 
-public class ArchivosUtil {
+public class LibArchivosUtil {
     private static DownloadManager downloadManager;
 
     /**
@@ -122,7 +111,7 @@ public class ArchivosUtil {
      * @param filename path when, el file will grooved
      */
     public static void downloadImageToLocalPrivate(String url, Context context, String filename) {
-        if (FileUtil.getExtension(url).toLowerCase().equals(".svg")) {
+        if (LibFileUtil.getExtension(url).toLowerCase().equals(".svg")) {
             saveImage(context, drawableToBitmap(url), filename);
         } else {
             saveImage(context, downloadImageBitmap(url), filename);
@@ -208,20 +197,20 @@ public class ArchivosUtil {
         donwloadPicassoFromHtml.execute(imageDownloadList);
     }
 
-    public static void DonwloadPicturesFromHtml(Context context, ArrayList<ImageDownload> imageDownloadList, FinishDowload finishDowload) {
+    public static void DonwloadPicturesFromHtml(Context context, ArrayList<ImageDownload> imageDownloadList, LibFinishDowload finishDowload) {
         DonwloadPicassoFromHtml donwloadPicassoFromHtml = new DonwloadPicassoFromHtml(context, finishDowload);
         donwloadPicassoFromHtml.execute(imageDownloadList);
     }
 
     private static class DonwloadPicassoFromHtml extends AsyncTask<ArrayList<ImageDownload>, Void, Void> {
         private Context context;
-        private FinishDowload finishDowload;
+        private LibFinishDowload finishDowload;
 
         public DonwloadPicassoFromHtml(Context context) {
             this.context = context;
         }
 
-        public DonwloadPicassoFromHtml(Context context, FinishDowload finishDowload) {
+        public DonwloadPicassoFromHtml(Context context, LibFinishDowload finishDowload) {
             this.context = context;
             this.finishDowload = finishDowload;
         }
@@ -247,7 +236,7 @@ public class ArchivosUtil {
     public static void downloadPictureHTML(Context context, ImageDownload imageDownload) {
         TextView textView = new AppCompatTextView(context);
         textView.setClickable(true);
-        PicassoImageDownload imageGetter = new PicassoImageDownload(context, imageDownload);
+        LibPicassoImageDownload imageGetter = new LibPicassoImageDownload(context, imageDownload);
         Spannable html;
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
             html = (Spannable) Html.fromHtml(imageDownload.getText(), Html.FROM_HTML_MODE_LEGACY, imageGetter, null);
