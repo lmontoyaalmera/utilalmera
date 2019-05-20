@@ -48,6 +48,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.List;
 
 public class ArchivosUtil {
     private static DownloadManager downloadManager;
@@ -200,24 +203,33 @@ public class ArchivosUtil {
         return bitmap;
     }
 
+    public static  void DonwloadPicturesFromHtml(Context context, ArrayList<ImageDownload> imageDownloadList) {
+        DonwloadPicassoFromHtml donwloadPicassoFromHtml = new DonwloadPicassoFromHtml(context);
+        donwloadPicassoFromHtml.execute(imageDownloadList);
+    }
 
-    private class DowloadPicassoFromHtml extends AsyncTask<ImageDownload, Void, Void> {
+    public static void DonwloadPicturesFromHtml(Context context, ArrayList<ImageDownload> imageDownloadList, FinishDowload finishDowload) {
+        DonwloadPicassoFromHtml donwloadPicassoFromHtml = new DonwloadPicassoFromHtml(context, finishDowload);
+        donwloadPicassoFromHtml.execute(imageDownloadList);
+    }
+
+    private static class DonwloadPicassoFromHtml extends AsyncTask<ArrayList<ImageDownload>, Void, Void> {
         private Context context;
         private FinishDowload finishDowload;
 
-        public DowloadPicassoFromHtml(Context context) {
+        public DonwloadPicassoFromHtml(Context context) {
             this.context = context;
         }
 
-        public DowloadPicassoFromHtml(Context context, FinishDowload finishDowload) {
+        public DonwloadPicassoFromHtml(Context context, FinishDowload finishDowload) {
             this.context = context;
-            this.finishDowload=finishDowload;
+            this.finishDowload = finishDowload;
         }
 
         @Override
-        protected Void doInBackground(ImageDownload... imageDownloads) {
-            for (int i = 0; i < imageDownloads.length; i++) {
-                downloadPictureHTML(context, imageDownloads[i]);
+        protected Void doInBackground(ArrayList<ImageDownload>... imageDownloads) {
+            for (int i = 0; i < imageDownloads[0].size(); i++) {
+                downloadPictureHTML(context, imageDownloads[0].get(i));
             }
             return null;
         }
@@ -225,7 +237,9 @@ public class ArchivosUtil {
         @Override
         protected void onPostExecute(Void aVoid) {
             super.onPostExecute(aVoid);
-            this.finishDowload.onFinish(true);
+            if (this.finishDowload != null) {
+                this.finishDowload.onFinish(true);
+            }
         }
     }
 
