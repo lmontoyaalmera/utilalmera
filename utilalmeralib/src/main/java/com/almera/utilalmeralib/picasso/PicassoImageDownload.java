@@ -10,6 +10,7 @@ import android.text.Spannable;
 import android.widget.TextView;
 
 import com.almera.utilalmeralib.archivosutil.ArchivosUtil;
+import com.almera.utilalmeralib.fileChooser.FileUtil;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Target;
 
@@ -17,19 +18,19 @@ public class PicassoImageDownload implements Html.ImageGetter {
 
 
     private Context context;
-    private String idFile;
+    private ImageDownload imageDownload;
 
     public PicassoImageDownload(Context context) {
         this.context = context;
     }
 
-    public PicassoImageDownload(Context context, String textValue, String idFile) {
+    public PicassoImageDownload(Context context,ImageDownload imageDownload) {
         this.context = context;
-        this.idFile = idFile;
+        this.imageDownload=imageDownload;
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
-            Html.fromHtml(textValue, Html.FROM_HTML_MODE_LEGACY, this, null);
+            Html.fromHtml(imageDownload.getText(), Html.FROM_HTML_MODE_LEGACY, this, null);
         } else {
-            Html.fromHtml(textValue, this, null);
+            Html.fromHtml(imageDownload.getText(), this, null);
         }
 
     }
@@ -38,7 +39,7 @@ public class PicassoImageDownload implements Html.ImageGetter {
     public Drawable getDrawable(final String source) {
         final BitmapDrawablePlaceHolder drawable = new BitmapDrawablePlaceHolder();
 
-        ArchivosUtil.downloadImageToLocalPrivate(source, context, idFile + "_" + ArchivosUtil.getNameFile(source + ""));
+        ArchivosUtil.downloadImageToLocalPrivate(source, context, imageDownload.getFilename() + "_" + ArchivosUtil.getNameFile(source + ""));
         return drawable;
     }
 

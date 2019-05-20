@@ -17,6 +17,9 @@ import android.os.AsyncTask;
 import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.v4.content.FileProvider;
+import android.support.v7.widget.AppCompatTextView;
+import android.text.Html;
+import android.text.Spannable;
 import android.util.Base64;
 import android.util.DisplayMetrics;
 import android.util.Log;
@@ -24,8 +27,12 @@ import android.view.Display;
 import android.view.WindowManager;
 import android.webkit.MimeTypeMap;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.almera.utilalmeralib.fileChooser.FileUtil;
+import com.almera.utilalmeralib.picasso.ImageDownload;
+import com.almera.utilalmeralib.picasso.PicassoImageDownload;
+import com.almera.utilalmeralib.picasso.PicassoImageGetter;
 import com.larvalabs.svgandroid.SVG;
 import com.larvalabs.svgandroid.SVGParser;
 
@@ -190,331 +197,35 @@ public class ArchivosUtil {
 
 
 
+    private class DowloadPicassoFromHtml extends AsyncTask<ImageDownload, Void, Void> {
+        private Context context;
+        public DowloadPicassoFromHtml(Context context) {
+        this.context=context;
+        }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    public static File saveBase64Temp(final Context context, final String imageData, String name) throws IOException {
-        final byte[] imgBytesData = android.util.Base64.decode(imageData,
-                android.util.Base64.DEFAULT);
-
-        final File file = new File(context.getCacheDir(), name);
-        final FileOutputStream fileOutputStream;
-        try {
-            fileOutputStream = new FileOutputStream(file);
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
+        @Override
+        protected Void doInBackground(ImageDownload... imageDownloads) {
+            for (int i = 0; i <imageDownloads.length ; i++) {
+                downloadPictureHTML(context,imageDownloads[i]);
+            }
             return null;
         }
-
-        final BufferedOutputStream bufferedOutputStream = new BufferedOutputStream(
-                fileOutputStream);
-        try {
-            bufferedOutputStream.write(imgBytesData);
-        } catch (IOException e) {
-            e.printStackTrace();
-            return null;
-        } finally {
-            try {
-                bufferedOutputStream.close();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-        return file;
-    }
-
-    public static String getRealPathFromUri(Context context, Uri contentUri) {
-        Cursor cursor = null;
-        try {
-            String[] proj = {MediaStore.Images.Media.DATA};
-            cursor = context.getContentResolver().query(contentUri, proj, null, null, null);
-            int column_index = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
-            cursor.moveToFirst();
-            return cursor.getString(column_index);
-        } finally {
-            if (cursor != null) {
-                cursor.close();
-            }
-        }
-    }
-
-    public static File getFileTarget(final String imageDir, final String imageName, Context context) {
-        ContextWrapper cw = new ContextWrapper(context);
-        File directory = cw.getDir(imageDir, Context.MODE_PRIVATE);
-        File myImageFile = new File(directory, imageName);
-        return myImageFile;
-    }
-
-    public static void deleteFileTarget(final String imageDir, final String imageName, Context context) {
-        ContextWrapper cw = new ContextWrapper(context);
-        File directory = cw.getDir(imageDir, Context.MODE_PRIVATE);
-        File myImageFile = new File(directory, imageName);
-        if (myImageFile.delete()) {
-            Log.d("aa", "image on the disk deleted successfully!");
-        }
-    }
-
-    public static File cargarArchivoFileName(String filename, Context context) {
-        File file = new File(context.getFilesDir() + "/" + filename);
-        return file;
-    }
-
-    public static Boolean guardarArchivoFil(String fileName, File file, Context context) {
-        FileOutputStream fos;
-        byte[] array = null;
-        try {
-            array = FileUtils.readFileToByteArray(file);
-        } catch (IOException e) {
-            e.printStackTrace();
-            return false;
-        }
-        try {
-            fos = context.openFileOutput(fileName, Context.MODE_PRIVATE);
-        } catch (Exception e) {
-            e.printStackTrace();
-            return false;
-        }
-        try {
-            fos.write(array);
-            fos.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-            return false;
-        }
-        return true;
-    }
-
-    public static Boolean guardarArchivoArra(String fileName, byte[] file, Context context) {
-        FileOutputStream fos;
-        try {
-            fos = context.openFileOutput(fileName, Context.MODE_PRIVATE);
-        } catch (Exception e) {
-            e.printStackTrace();
-            return false;
-        }
-        try {
-            fos.write(file);
-            fos.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-            return false;
-        }
-        return true;
-    }
-
-    public static long DownloadData(Uri uri, Context context) {
-
-        long downloadReference;
-
-        // Create request for android download manager
-
-        downloadManager = (DownloadManager) context.getSystemService(context.DOWNLOAD_SERVICE);
-        DownloadManager.Request request = new DownloadManager.Request(uri);
-        request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED);
-        //Setting title of request
-        request.setTitle("Data Download");
-
-        //Setting description of request
-        request.setDescription("Android Data download using DownloadManager.");
-
-        request.setDestinationInExternalFilesDir(context, Environment.DIRECTORY_DOWNLOADS, getNameFile(uri.getPath()));
-
-        //Enqueue download and save into referenceId
-        downloadReference = downloadManager.enqueue(request);
-
-        return downloadReference;
-    }
-
-    public static void CopiarArchivos(String sourceFile, String destinationFile) {
-
-        try {
-
-            File inFile = new File(sourceFile);
-            File outFile = new File(destinationFile);
-
-            FileInputStream in = new FileInputStream(inFile);
-            FileOutputStream out = new FileOutputStream(outFile);
-
-            byte[] buffer = new byte[1024];
-            int c;
-
-
-            while ((c = in.read(buffer)) != -1)
-                out.write(buffer, 0, c);
-
-            out.flush();
-            in.close();
-            out.close();
-
-        } catch (IOException e) {
-
-            Log.e("Archvio util", "Hubo un error de entrada/salida!!!");
-
-        }
-    }
-
-    public static boolean escribirArchivo(byte[] fileBytes, String archivoDestino) {
-        boolean correcto = false;
-        try {
-            OutputStream out = new FileOutputStream(archivoDestino);
-            out.write(fileBytes);
-            out.close();
-            correcto = true;
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return correcto;
-
     }
 
 
-    public static long DownloadData1(String path, Context context) {
-
-        Uri downloadUri = Uri.parse(path);
-        DownloadManager.Request request = new DownloadManager.Request(downloadUri);
-        request.setDescription("Downloading a file");
-        long id = downloadManager.enqueue(request.setAllowedNetworkTypes(DownloadManager.Request.NETWORK_WIFI | DownloadManager.Request.NETWORK_MOBILE)
-                .setAllowedOverRoaming(false)
-                .setTitle("File Downloading...")
-                .setDescription("Image File Download")
-                .setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED)
-                .setDestinationInExternalPublicDir(Environment.DIRECTORY_DOWNLOADS, "cm.png"));
-        return id;
-    }
-
-    private static String DownloadStatus(Cursor cursor, long DownloadId) {
-
-        //column for download  status
-        int columnIndex = cursor.getColumnIndex(DownloadManager.COLUMN_STATUS);
-        int status = cursor.getInt(columnIndex);
-        //column for reason code if the download failed or paused
-        int columnReason = cursor.getColumnIndex(DownloadManager.COLUMN_REASON);
-        int reason = cursor.getInt(columnReason);
-        //get the download filename
-        int filenameIndex = cursor.getColumnIndex(DownloadManager.COLUMN_LOCAL_FILENAME);
-        String filename = cursor.getString(filenameIndex);
-
-        String statusText = "";
-        String reasonText = "";
-
-        switch (status) {
-            case DownloadManager.STATUS_FAILED:
-                statusText = "STATUS_FAILED";
-                switch (reason) {
-                    case DownloadManager.ERROR_CANNOT_RESUME:
-                        reasonText = "ERROR_CANNOT_RESUME";
-                        break;
-                    case DownloadManager.ERROR_DEVICE_NOT_FOUND:
-                        reasonText = "ERROR_DEVICE_NOT_FOUND";
-                        break;
-                    case DownloadManager.ERROR_FILE_ALREADY_EXISTS:
-                        reasonText = "ERROR_FILE_ALREADY_EXISTS";
-                        break;
-                    case DownloadManager.ERROR_FILE_ERROR:
-                        reasonText = "ERROR_FILE_ERROR";
-                        break;
-                    case DownloadManager.ERROR_HTTP_DATA_ERROR:
-                        reasonText = "ERROR_HTTP_DATA_ERROR";
-                        break;
-                    case DownloadManager.ERROR_INSUFFICIENT_SPACE:
-                        reasonText = "ERROR_INSUFFICIENT_SPACE";
-                        break;
-                    case DownloadManager.ERROR_TOO_MANY_REDIRECTS:
-                        reasonText = "ERROR_TOO_MANY_REDIRECTS";
-                        break;
-                    case DownloadManager.ERROR_UNHANDLED_HTTP_CODE:
-                        reasonText = "ERROR_UNHANDLED_HTTP_CODE";
-                        break;
-                    case DownloadManager.ERROR_UNKNOWN:
-                        reasonText = "ERROR_UNKNOWN";
-                        break;
-                }
-                break;
-            case DownloadManager.STATUS_PAUSED:
-                statusText = "STATUS_PAUSED";
-                switch (reason) {
-                    case DownloadManager.PAUSED_QUEUED_FOR_WIFI:
-                        reasonText = "PAUSED_QUEUED_FOR_WIFI";
-                        break;
-                    case DownloadManager.PAUSED_UNKNOWN:
-                        reasonText = "PAUSED_UNKNOWN";
-                        break;
-                    case DownloadManager.PAUSED_WAITING_FOR_NETWORK:
-                        reasonText = "PAUSED_WAITING_FOR_NETWORK";
-                        break;
-                    case DownloadManager.PAUSED_WAITING_TO_RETRY:
-                        reasonText = "PAUSED_WAITING_TO_RETRY";
-                        break;
-                }
-                break;
-            case DownloadManager.STATUS_PENDING:
-                statusText = "STATUS_PENDING";
-                break;
-            case DownloadManager.STATUS_RUNNING:
-                statusText = "STATUS_RUNNING";
-                break;
-            case DownloadManager.STATUS_SUCCESSFUL:
-                statusText = "STATUS_SUCCESSFUL";
-                reasonText = "Filename:\n" + filename;
-                break;
+    public static void downloadPictureHTML(Context context, ImageDownload imageDownload) {
+        TextView textView = new AppCompatTextView(context);
+        textView.setClickable(true);
+        PicassoImageDownload imageGetter = new PicassoImageDownload(context,imageDownload );
+        Spannable html;
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
+            html = (Spannable) Html.fromHtml(imageDownload.getText(), Html.FROM_HTML_MODE_LEGACY, imageGetter, null);
+        } else {
+            html = (Spannable) Html.fromHtml(imageDownload.getText(), imageGetter, null);
         }
-
-        return statusText;
-
-    }
-
-    public static void Check_Image_Status(long Image_DownloadId) {
-
-        DownloadManager.Query ImageDownloadQuery = new DownloadManager.Query();
-        //set the query filter to our previously Enqueued download
-        ImageDownloadQuery.setFilterById(Image_DownloadId);
-
-        //Query the download manager about downloads that have been requested.
-        Cursor cursor = downloadManager.query(ImageDownloadQuery);
-        if (cursor.moveToFirst()) {
-            DownloadStatus(cursor, Image_DownloadId);
-        }
-
+        textView.setText(html);
+        textView.setFocusable(true);
+        textView.setFocusableInTouchMode(true);
     }
 
     public static String getNameFile(String path) {
@@ -522,107 +233,10 @@ public class ArchivosUtil {
         return path.substring(startPosition);
     }
 
-    public static void deleteFile(String path) {
-        File file = new File(path);
-        file.delete();
-
+    public static File cargarArchivoFileName(String filename, Context context) {
+        File file = new File(context.getFilesDir() + "/" + filename);
+        return file;
     }
-
-
-    public static void deleteArchivo(String filename, Context context) {
-        context.deleteFile(filename);
-    }
-
-
-    public static void asyncDownloadSaveImageFromUrl(String imageUrl, Context context, String nameImage) {
-
-        new DownloadImage(nameImage, context).execute(imageUrl);
-    }
-
-
-
-    public static void loadImageFromDiskbase64(ImageView v, Context context, String base64) {
-        byte[] decodedString = Base64.decode(base64, Base64.DEFAULT);
-        Bitmap decodedByte = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
-        v.setImageBitmap(decodedByte);
-    }
-
-    public void deleteImageFromDisk(Context context, String nameImage) {
-        File file = context.getFileStreamPath(nameImage);
-        if (file.exists()) {
-            file.delete();
-        }
-    }
-
-    public static boolean checkIfFileExist(Context context, String nameImage) {
-        File file = context.getFileStreamPath(nameImage);
-        if (file.exists()) {
-            return true;
-        } else {
-            return false;
-        }
-    }
-
-    /**********************************************************************************************************
-     * Download image and save it to disk
-     * <String, Void, Bitmap> String parameter, Void for progress, Bitmap for return
-     **********************************************************************************************************/
-    public static class DownloadImage extends AsyncTask<String, Void, Bitmap> {
-        private String nameImage;
-        private Context context;
-        private String TAG = "DownloadImage";
-        ProgressDialog progressDialog;
-
-
-        public DownloadImage(String nameImage, Context context) {
-            this.nameImage = nameImage;
-            this.context = context;
-            progressDialog = new ProgressDialog(context);
-            progressDialog.setCancelable(false);
-            progressDialog.setMessage("Por favor espere ...");
-            progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
-        }
-
-        private Bitmap downloadImageBitmap(String sUrl) {
-            Bitmap bitmap = null;
-            try {
-                InputStream inputStream = new URL(sUrl).openStream();   // Download Image from URL
-                bitmap = BitmapFactory.decodeStream(inputStream);       // Decode Bitmap
-                inputStream.close();
-            } catch (Exception e) {
-                Log.d(TAG, "Exception 1, Something went wrong!");
-                e.printStackTrace();
-            }
-            Log.d("saveImage", "Exception 2, Something went wrong!");
-            return bitmap;
-        }
-
-        @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
-
-        }
-
-        @Override
-        protected Bitmap doInBackground(String... params) {
-            return downloadImageBitmap(params[0]);
-        }
-
-        protected void onPostExecute(Bitmap result) {
-            saveImage(context, result, nameImage);
-        }
-    }
-
-
-
-
-
-
-
-
-
-
-
 
 
 }
