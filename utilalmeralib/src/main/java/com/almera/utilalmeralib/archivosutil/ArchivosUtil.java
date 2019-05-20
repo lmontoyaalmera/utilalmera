@@ -30,6 +30,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.almera.utilalmeralib.fileChooser.FileUtil;
+import com.almera.utilalmeralib.picasso.FinishDowload;
 import com.almera.utilalmeralib.picasso.ImageDownload;
 import com.almera.utilalmeralib.picasso.PicassoImageDownload;
 import com.almera.utilalmeralib.picasso.PicassoImageGetter;
@@ -79,7 +80,7 @@ public class ArchivosUtil {
      * @param file file for converted
      * @return string of the base 64 converted
      */
-    public static String convertFileToBase64(File file)throws IOException {
+    public static String convertFileToBase64(File file) throws IOException {
         byte[] array = null;
         array = FileUtils.readFileToByteArray(file);
         return Base64.encodeToString(array, Base64.DEFAULT);
@@ -87,11 +88,12 @@ public class ArchivosUtil {
 
     /**
      * This method open file with its repective intent example video, image, document
+     *
      * @param context
-     * @param path of file to open
+     * @param path        of file to open
      * @param authorities
      */
-    public static void openFileWithIntent( Context context,String path,String authorities ) {
+    public static void openFileWithIntent(Context context, String path, String authorities) {
 
         File file = new File(path);
         MimeTypeMap map = MimeTypeMap.getSingleton();
@@ -124,6 +126,7 @@ public class ArchivosUtil {
         }
 
     }
+
     // files are saved to /data/data/com.codexpedia.picassosaveimage/files
     public static void saveImage(Context context, Bitmap b, String imageName) {
         FileOutputStream foStream;
@@ -167,9 +170,11 @@ public class ArchivosUtil {
         Log.d("saveImage", "Exception 2, Something went wrong!");
         return bitmap;
     }
+
     public static void loadImageFromDisk(ImageView v, Context context, String myImageName) {
         v.setImageBitmap(loadImageBitmap(context, myImageName));
     }
+
     public static Bitmap loadImageBitmap(Context context, String imageName) {
         Bitmap bitmap = null;
         FileInputStream fiStream;
@@ -196,19 +201,31 @@ public class ArchivosUtil {
     }
 
 
-
     private class DowloadPicassoFromHtml extends AsyncTask<ImageDownload, Void, Void> {
         private Context context;
+        private FinishDowload finishDowload;
+
         public DowloadPicassoFromHtml(Context context) {
-        this.context=context;
+            this.context = context;
+        }
+
+        public DowloadPicassoFromHtml(Context context, FinishDowload finishDowload) {
+            this.context = context;
+            this.finishDowload=finishDowload;
         }
 
         @Override
         protected Void doInBackground(ImageDownload... imageDownloads) {
-            for (int i = 0; i <imageDownloads.length ; i++) {
-                downloadPictureHTML(context,imageDownloads[i]);
+            for (int i = 0; i < imageDownloads.length; i++) {
+                downloadPictureHTML(context, imageDownloads[i]);
             }
             return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            super.onPostExecute(aVoid);
+            this.finishDowload.onFinish(true);
         }
     }
 
@@ -216,7 +233,7 @@ public class ArchivosUtil {
     public static void downloadPictureHTML(Context context, ImageDownload imageDownload) {
         TextView textView = new AppCompatTextView(context);
         textView.setClickable(true);
-        PicassoImageDownload imageGetter = new PicassoImageDownload(context,imageDownload );
+        PicassoImageDownload imageGetter = new PicassoImageDownload(context, imageDownload);
         Spannable html;
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
             html = (Spannable) Html.fromHtml(imageDownload.getText(), Html.FROM_HTML_MODE_LEGACY, imageGetter, null);
