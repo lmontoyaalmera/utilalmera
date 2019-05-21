@@ -43,6 +43,7 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.net.URL;
 import java.util.ArrayList;
 
@@ -359,6 +360,53 @@ public class LibArchivosUtil {
         }
 
     }
+    public static void deleteFile(String path) {
+        File file = new File(path);
+        file.delete();
+
+    }
+    public static void copyFile(String sourceFile, String destinationFile) {
+
+        try {
+
+            File inFile = new File(sourceFile);
+            File outFile = new File(destinationFile);
+
+            FileInputStream in = new FileInputStream(inFile);
+            FileOutputStream out = new FileOutputStream(outFile);
+
+            byte[] buffer = new byte[1024];
+            int c;
+
+
+            while ((c = in.read(buffer)) != -1)
+                out.write(buffer, 0, c);
+
+            out.flush();
+            in.close();
+            out.close();
+
+        } catch (IOException e) {
+
+            Log.e("Archvio util", "Hubo un error de entrada/salida!!!");
+
+        }
+    }
+
+    public static boolean createFile(byte[] fileBytes, String archivoDestino) {
+        boolean correcto = false;
+        try {
+            OutputStream out = new FileOutputStream(archivoDestino);
+            out.write(fileBytes);
+            out.close();
+            correcto = true;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return correcto;
+
+    }
+
 
 
 }
