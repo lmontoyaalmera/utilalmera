@@ -91,7 +91,7 @@ public class LibArchivosUtil {
      * This method open file with its repective intent example video, image, document
      *
      * @param context
-     * @param path        of file to open
+     * @param path    of file to open
      */
     public static void openFileWithIntent(Context context, String path) {
 
@@ -130,6 +130,7 @@ public class LibArchivosUtil {
         intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
         context.startActivity(intent);
     }
+
     /***
      * This method dowload imagenes png, jpg or svg and save in storage private
      * @param url url imagen,
@@ -157,6 +158,7 @@ public class LibArchivosUtil {
             e.printStackTrace();
         }
     }
+
     public static File saveBase64Temp(final Context context, final String imageData, String name) throws IOException {
         final byte[] imgBytesData = android.util.Base64.decode(imageData,
                 android.util.Base64.DEFAULT);
@@ -247,7 +249,7 @@ public class LibArchivosUtil {
         return bitmap;
     }
 
-    public static  void DonwloadPicturesFromHtml(Context context, ArrayList<ImageDownload> imageDownloadList) {
+    public static void DonwloadPicturesFromHtml(Context context, ArrayList<ImageDownload> imageDownloadList) {
         DonwloadPicassoFromHtml donwloadPicassoFromHtml = new DonwloadPicassoFromHtml(context);
         donwloadPicassoFromHtml.execute(imageDownloadList);
     }
@@ -314,8 +316,7 @@ public class LibArchivosUtil {
     }
 
 
-
-    public static void openFileOrDownload(final View view, String uri, final String dir, final Activity activity, String id) {
+    public static void openFileOrDownload(final Context context, String uri, final String dir, final Activity activity, String id) {
 
         File file = new File(dir);
         final String nombre = LibArchivosUtil.getNameFile(dir);
@@ -326,36 +327,23 @@ public class LibArchivosUtil {
         if (type == null)
             type = "*/*";
         if (file.exists()) {
-            Intent intent = new Intent(Intent.ACTION_VIEW);
-            //Uri data = Uri.fromFile(file);
-            String authorities = activity.getPackageName() + ".provider";
-            Uri data = FileProvider.getUriForFile(view.getContext(), authorities, file);
-
-            intent.setDataAndType(data, type);
-            intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-            activity.startActivity(intent);
+            openFileWithIntent(context, dir);
         } else {
             final String finalType = type;
-            LibRxManager rxManager = new LibRxManager(activity,uri);
-            rxManager.descargarArchivo(id,  new DisposableSingleObserver<ResponseBody>() {
+            LibRxManager rxManager = new LibRxManager(activity, uri);
+            rxManager.descargarArchivo(id, new DisposableSingleObserver<ResponseBody>() {
                 @Override
                 public void onSuccess(ResponseBody responseBody) {
                     String base64 = null;
                     try {
-                        base64 = (String) responseBody.string();
+                        base64 = responseBody.string();
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
 
                     try {
                         File file = LibArchivosUtil.saveBase64Temp(activity, base64, nombre);
-                        Intent intent = new Intent(Intent.ACTION_VIEW);
-                        String authorities = activity.getPackageName() + ".provider";
-                        Uri data = FileProvider.getUriForFile(view.getContext(), authorities, file);
-
-                        intent.setDataAndType(data, finalType);
-                        intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-                        activity.startActivity(intent);
+                        openFileWithIntent(context, file.getPath());
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
