@@ -1,5 +1,6 @@
 package com.almera.utilalmeralib.archivosutil;
 
+import android.app.Activity;
 import android.app.DownloadManager;
 import android.content.Context;
 import android.content.Intent;
@@ -19,12 +20,14 @@ import android.util.Base64;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.Display;
+import android.view.View;
 import android.view.WindowManager;
 import android.webkit.MimeTypeMap;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.almera.utilalmeralib.fileChooser.LibFileUtil;
+import com.almera.utilalmeralib.libnetworkutil.LibRxManager;
 import com.almera.utilalmeralib.picasso.LibFinishDowload;
 import com.almera.utilalmeralib.picasso.ImageDownload;
 import com.almera.utilalmeralib.picasso.LibPicassoImageDownload;
@@ -33,13 +36,19 @@ import com.larvalabs.svgandroid.SVGParser;
 
 import org.apache.commons.io.FileUtils;
 
+import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 import java.util.ArrayList;
+
+import io.reactivex.observers.DisposableSingleObserver;
+import okhttp3.ResponseBody;
+
 
 public class LibArchivosUtil {
     private static DownloadManager downloadManager;
@@ -83,9 +92,8 @@ public class LibArchivosUtil {
      *
      * @param context
      * @param path        of file to open
-     * @param authorities
      */
-    public static void openFileWithIntent(Context context, String path, String authorities) {
+    public static void openFileWithIntent(Context context, String path) {
 
         File file = new File(path);
         MimeTypeMap map = MimeTypeMap.getSingleton();
@@ -96,7 +104,7 @@ public class LibArchivosUtil {
             type = "*/*";
 
         Intent intent = new Intent(Intent.ACTION_VIEW);
-
+        String authorities = context.getPackageName() + ".provider";
         Uri data = FileProvider.getUriForFile(context, authorities, file);
 
         intent.setDataAndType(data, type);
@@ -104,6 +112,24 @@ public class LibArchivosUtil {
         context.startActivity(intent);
     }
 
+    public static void openFileWithIntent(View view, String path, Context context) {
+        File file = new File(path);
+        MimeTypeMap map = MimeTypeMap.getSingleton();
+        String extension = MimeTypeMap.getFileExtensionFromUrl(file.getName());
+        String type = map.getMimeTypeFromExtension(extension);
+
+        if (type == null)
+            type = "*/*";
+
+        Intent intent = new Intent(Intent.ACTION_VIEW);
+        //Uri data = Uri.fromFile(file);
+        String authorities = context.getPackageName() + ".provider";
+        Uri data = FileProvider.getUriForFile(view.getContext(), authorities, file);
+
+        intent.setDataAndType(data, type);
+        intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+        context.startActivity(intent);
+    }
     /***
      * This method dowload imagenes png, jpg or svg and save in storage private
      * @param url url imagen,
@@ -130,6 +156,35 @@ public class LibArchivosUtil {
             Log.d("saveImage", "Exception 2, Something went wrong!");
             e.printStackTrace();
         }
+    }
+    public static File saveBase64Temp(final Context context, final String imageData, String name) throws IOException {
+        final byte[] imgBytesData = android.util.Base64.decode(imageData,
+                android.util.Base64.DEFAULT);
+
+        final File file = new File(context.getCacheDir(), name);
+        final FileOutputStream fileOutputStream;
+        try {
+            fileOutputStream = new FileOutputStream(file);
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+            return null;
+        }
+
+        final BufferedOutputStream bufferedOutputStream = new BufferedOutputStream(
+                fileOutputStream);
+        try {
+            bufferedOutputStream.write(imgBytesData);
+        } catch (IOException e) {
+            e.printStackTrace();
+            return null;
+        } finally {
+            try {
+                bufferedOutputStream.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        return file;
     }
 
     public static Bitmap drawableToBitmap(String sUrl) {
@@ -253,9 +308,68 @@ public class LibArchivosUtil {
         return path.substring(startPosition);
     }
 
-    public static File cargarArchivoFileName(String filename, Context context) {
+    public static File loadFileWithFileName(String filename, Context context) {
         File file = new File(context.getFilesDir() + "/" + filename);
         return file;
+    }
+
+
+
+    public static void openFileOrDownload(final View view, String uri, final String dir, final Activity activity, String id) {
+
+        File file = new File(dir);
+        final String nombre = LibArchivosUtil.getNameFile(dir);
+        MimeTypeMap map = MimeTypeMap.getSingleton();
+        String extension = MimeTypeMap.getFileExtensionFromUrl(file.getName());
+        String type = map.getMimeTypeFromExtension(extension);
+
+        if (type == null)
+            type = "*/*";
+        if (file.exists()) {
+            Intent intent = new Intent(Intent.ACTION_VIEW);
+            //Uri data = Uri.fromFile(file);
+            String authorities = activity.getPackageName() + ".provider";
+            Uri data = FileProvider.getUriForFile(view.getContext(), authorities, file);
+
+            intent.setDataAndType(data, type);
+            intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+            activity.startActivity(intent);
+        } else {
+            final String finalType = type;
+            LibRxManager rxManager = new LibRxManager(activity,uri);
+            rxManager.descargarArchivo(id,  new DisposableSingleObserver<ResponseBody>() {
+                @Override
+                public void onSuccess(ResponseBody responseBody) {
+                    String base64 = null;
+                    try {
+                        base64 = (String) responseBody.string();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+
+                    try {
+                        File file = LibArchivosUtil.saveBase64Temp(activity, base64, nombre);
+                        Intent intent = new Intent(Intent.ACTION_VIEW);
+                        String authorities = activity.getPackageName() + ".provider";
+                        Uri data = FileProvider.getUriForFile(view.getContext(), authorities, file);
+
+                        intent.setDataAndType(data, finalType);
+                        intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+                        activity.startActivity(intent);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+
+
+                }
+
+                @Override
+                public void onError(Throwable e) {
+
+                }
+            });
+        }
+
     }
 
 
