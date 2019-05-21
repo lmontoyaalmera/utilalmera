@@ -316,7 +316,7 @@ public class LibArchivosUtil {
     }
 
 
-    public static void openFileOrDownload(final Context context, String uri, final String dir, final Activity activity, String id) {
+    public static void openFileOrDownload(final Context context, String uri, final String dir, String id) {
 
         File file = new File(dir);
         final String nombre = LibArchivosUtil.getNameFile(dir);
@@ -330,7 +330,7 @@ public class LibArchivosUtil {
             openFileWithIntent(context, dir);
         } else {
             final String finalType = type;
-            LibRxManager rxManager = new LibRxManager(activity, uri);
+            LibRxManager rxManager = new LibRxManager( uri);
             rxManager.descargarArchivo(id, new DisposableSingleObserver<ResponseBody>() {
                 @Override
                 public void onSuccess(ResponseBody responseBody) {
@@ -342,7 +342,7 @@ public class LibArchivosUtil {
                     }
 
                     try {
-                        File file = LibArchivosUtil.saveBase64Temp(activity, base64, nombre);
+                        File file = LibArchivosUtil.saveBase64Temp(context, base64, nombre);
                         openFileWithIntent(context, file.getPath());
                     } catch (IOException e) {
                         e.printStackTrace();

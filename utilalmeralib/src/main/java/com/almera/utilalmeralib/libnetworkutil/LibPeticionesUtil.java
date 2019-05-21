@@ -2,6 +2,7 @@ package com.almera.utilalmeralib.libnetworkutil;
 
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 
 
@@ -25,7 +26,7 @@ public class LibPeticionesUtil {
      * @return
      * @throws
      */
-    public static LibRestClient createClienteRX(String url, Activity activity) {
+    public static LibRestClient createClienteRX(String url) {
 
 
         OkHttpClient.Builder httpClient = new OkHttpClient.Builder();

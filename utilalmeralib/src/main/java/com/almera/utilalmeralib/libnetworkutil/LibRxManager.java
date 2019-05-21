@@ -1,6 +1,7 @@
 package com.almera.utilalmeralib.libnetworkutil;
 
 import android.app.Activity;
+import android.content.Context;
 
 import java.util.HashMap;
 
@@ -13,17 +14,17 @@ import okhttp3.ResponseBody;
 
 public class LibRxManager {
     private CompositeDisposable disposable = new CompositeDisposable();
-    private Activity activity;
+
     LibRestClient restCliente;
     String uri;
 
 
 
 
-    public LibRxManager(Activity activity,String uri) {
-        this.activity = activity;
+    public LibRxManager(String uri) {
+
         this.uri=uri;
-        this.restCliente = LibPeticionesUtil.createClienteRX(uri, activity);
+        this.restCliente = LibPeticionesUtil.createClienteRX(uri);
     }
 
 

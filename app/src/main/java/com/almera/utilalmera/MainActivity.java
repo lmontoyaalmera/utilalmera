@@ -28,7 +28,7 @@ public class MainActivity extends AppCompatActivity {
         new Thread(new Runnable() {
             @Override
             public void run() {
-                LibPicassoImageDownload imageGetter = new LibPicassoImageDownload(getApplicationContext(),html1,idiamge);
+               // LibPicassoImageDownload imageGetter = new LibPicassoImageDownload(getApplicationContext(),html1,idiamge);
             }
         }
         ).start();
