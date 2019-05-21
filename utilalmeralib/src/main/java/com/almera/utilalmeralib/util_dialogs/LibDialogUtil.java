@@ -20,6 +20,11 @@ public class LibDialogUtil {
             public void showDialog() {
                 progressDialog.show();
             }
+
+            @Override
+            public void changeMessage(String message) {
+                progressDialog.setMessage(message);
+            }
         };
     }
 }
