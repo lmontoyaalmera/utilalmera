@@ -317,7 +317,7 @@ public class LibArchivosUtil {
     }
 
 
-    public static void openFileOrDownload(final Context context, String uri, final String dir, String id) {
+    public static void openFileOrDownload(final Context context, String uri, String conexion,final String dir, String id) {
 
         File file = new File(dir);
         final String nombre = LibArchivosUtil.getNameFile(dir);
@@ -332,7 +332,7 @@ public class LibArchivosUtil {
         } else {
             final String finalType = type;
             LibRxManager rxManager = new LibRxManager( uri);
-            rxManager.descargarArchivo(id, new DisposableSingleObserver<ResponseBody>() {
+            rxManager.descargarArchivo(id,conexion, new DisposableSingleObserver<ResponseBody>() {
                 @Override
                 public void onSuccess(ResponseBody responseBody) {
                     String base64 = null;
