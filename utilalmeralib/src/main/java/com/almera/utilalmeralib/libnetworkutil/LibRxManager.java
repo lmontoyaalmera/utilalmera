@@ -28,11 +28,12 @@ public class LibRxManager {
     }
 
 
-    public void descargarArchivo(String idArchivo,String conexion, DisposableSingleObserver<ResponseBody> observer) {
+    public void descargarArchivo(String idArchivo,String conexion,String token, DisposableSingleObserver<ResponseBody> observer) {
         HashMap<String, String> headers = new HashMap<>();
 
         headers.put("archivoId", idArchivo);
         headers.put("conexion", conexion);
+        headers.put("token", token);
         Disposable disposable_aux = (Disposable) restCliente.descargarArchivo(headers)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread()).subscribeWith(observer);
