@@ -79,7 +79,7 @@ public class LibPicassoImageGetter implements Html.ImageGetter {
             float metric = context.getResources().getDisplayMetrics().density;
             int heightPixels = metrics.heightPixels;
 
-            int widthPixels = (int) (metrics.widthPixels * metric);
+            int widthPixels = (int) (metrics.widthPixels -30 * metric);
             int heightn = (height * widthPixels) / width;
             drawable.setBounds(0, 0, widthPixels, (int) (heightn));
             setBounds(0, 0, widthPixels, (int) (heightn));
