@@ -320,7 +320,7 @@ public class LibArchivosUtil {
     public static void openFileOrDownload(final Context context, String uri, String conexion,String token,final String dir, String id) {
 
         File file = new File(dir);
-        final String nombre = LibArchivosUtil.getNameFile(dir);
+
         MimeTypeMap map = MimeTypeMap.getSingleton();
         String extension = MimeTypeMap.getFileExtensionFromUrl(file.getName());
         String type = map.getMimeTypeFromExtension(extension);
@@ -332,6 +332,7 @@ public class LibArchivosUtil {
         } else {
             final String finalType = type;
             LibRxManager rxManager = new LibRxManager( uri);
+            final String nombre = LibArchivosUtil.getNameFile(uri);
             rxManager.descargarArchivo(id,conexion,token, new DisposableSingleObserver<ResponseBody>() {
                 @Override
                 public void onSuccess(ResponseBody responseBody) {
