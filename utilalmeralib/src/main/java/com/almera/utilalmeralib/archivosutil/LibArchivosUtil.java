@@ -149,14 +149,16 @@ public class LibArchivosUtil {
 
     // files are saved to /data/data/com.codexpedia.picassosaveimage/files
     public static void saveImage(Context context, Bitmap b, String imageName) {
-        FileOutputStream foStream;
-        try {
-            foStream = context.openFileOutput(imageName, Context.MODE_PRIVATE);
-            b.compress(Bitmap.CompressFormat.PNG, 100, foStream);
-            foStream.close();
-        } catch (Exception e) {
-            Log.d("saveImage", "Exception 2, Something went wrong!");
-            e.printStackTrace();
+        if(b!=null) {
+            FileOutputStream foStream;
+            try {
+                foStream = context.openFileOutput(imageName, Context.MODE_PRIVATE);
+                b.compress(Bitmap.CompressFormat.PNG, 100, foStream);
+                foStream.close();
+            } catch (Exception e) {
+                Log.d("saveImage", "Exception 2, Something went wrong!");
+                e.printStackTrace();
+            }
         }
     }
 
