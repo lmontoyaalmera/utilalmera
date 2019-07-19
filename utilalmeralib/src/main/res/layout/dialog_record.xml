@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_margin="40dp"
+    android:gravity="center"
+    android:orientation="vertical">
+    <TextView
+        android:id="@+id/text_dialog_record"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:text="Mantener presionado para grabar"
+        android:textAlignment="center"
+        android:paddingTop="10dp"/>
+
+    <LinearLayout
+        android:id="@+id/layoutRecored"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginBottom="30dp"
+        android:layout_marginTop="20dp"
+        android:gravity="center"
+        android:orientation="vertical"
+        android:visibility="visible">
+
+        <Chronometer
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:id="@+id/chronometerRecored"
+            android:gravity="center" />
+        <com.skyfishjy.library.RippleBackground xmlns:android="http://schemas.android.com/apk/res/android"
+            xmlns:app="http://schemas.android.com/apk/res-auto"
+            android:id="@+id/content"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:rb_color="#f78383"
+            app:rb_duration="3000"
+            app:rb_radius="32dp"
+            app:rb_rippleAmount="4"
+            app:rb_scale="6">
+
+            <ImageButton
+                android:id="@+id/btnRecored"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:layout_centerInParent="true"
+                android:background="@drawable/ovalbuttonred"
+                android:gravity="center"
+                android:src="@drawable/ic_mic_black_24dp"
+                android:tint="@color/white" />
+        </com.skyfishjy.library.RippleBackground>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/layoutQuestion"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginBottom="30dp"
+        android:layout_marginTop="20dp"
+        android:gravity="center"
+        android:orientation="horizontal"
+        android:visibility="gone">
+        <ImageButton
+            android:id="@+id/btnPlayerRecored"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_margin="10dp"
+            android:layout_gravity="right"
+            android:background="@drawable/ovalbuttonred"
+            android:tint="?attr/android:titleTextColor"
+            android:src="@drawable/ic_play_arrow_black_24dp"/>
+        <ImageButton
+            android:id="@+id/btnAceptarRecored"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_margin="10dp"
+            android:layout_gravity="left"
+            android:background="@drawable/ovalbuttonred"
+            android:tint="?attr/android:titleTextColor"
+            android:src="@drawable/ic_check_black_24dp"/>
+
+        <ImageButton
+            android:id="@+id/btnCancelarRecored"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_margin="10dp"
+            android:layout_gravity="right"
+            android:background="@drawable/ovalbuttonred"
+            android:tint="?attr/android:titleTextColor"
+            android:src="@drawable/ic_cancel_black_24dp"/>
+    </LinearLayout>
+
+
+</LinearLayout>
