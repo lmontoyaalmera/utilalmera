@@ -45,10 +45,10 @@
                 android:layout_width="50dp"
                 android:layout_height="50dp"
                 android:layout_centerInParent="true"
-                android:background="@drawable/ovalbuttonred"
+                android:background="@drawable/zovalbuttonred"
                 android:gravity="center"
-                android:src="@drawable/ic_mic_black_24dp"
-                android:tint="@color/white" />
+                android:src="@drawable/zic_mic_black_24dp"
+                android:tint="#ffffff" />
         </com.skyfishjy.library.RippleBackground>
 
     </LinearLayout>
@@ -68,18 +68,18 @@
             android:layout_height="50dp"
             android:layout_margin="10dp"
             android:layout_gravity="right"
-            android:background="@drawable/ovalbuttonred"
+            android:background="@drawable/zovalbuttonred"
             android:tint="?attr/android:titleTextColor"
-            android:src="@drawable/ic_play_arrow_black_24dp"/>
+            android:src="@drawable/zic_play_arrow_black_24dp"/>
         <ImageButton
             android:id="@+id/btnAceptarRecored"
             android:layout_width="50dp"
             android:layout_height="50dp"
             android:layout_margin="10dp"
             android:layout_gravity="left"
-            android:background="@drawable/ovalbuttonred"
+            android:background="@drawable/zovalbuttonred"
             android:tint="?attr/android:titleTextColor"
-            android:src="@drawable/ic_check_black_24dp"/>
+            android:src="@drawable/zic_check_black_24dp"/>
 
         <ImageButton
             android:id="@+id/btnCancelarRecored"
@@ -87,9 +87,9 @@
             android:layout_height="50dp"
             android:layout_margin="10dp"
             android:layout_gravity="right"
-            android:background="@drawable/ovalbuttonred"
+            android:background="@drawable/zovalbuttonred"
             android:tint="?attr/android:titleTextColor"
-            android:src="@drawable/ic_cancel_black_24dp"/>
+            android:src="@drawable/zic_cancel_black_24dp"/>
     </LinearLayout>
 
 
