@@ -31,6 +31,8 @@ import com.almera.utilalmeralib.libnetworkutil.LibRxManager;
 import com.almera.utilalmeralib.picasso.LibFinishDowload;
 import com.almera.utilalmeralib.picasso.ImageDownload;
 import com.almera.utilalmeralib.picasso.LibPicassoImageDownload;
+import com.almera.utilalmeralib.util_dialogs.LibDialogLisener;
+import com.almera.utilalmeralib.util_dialogs.LibDialogUtil;
 import com.larvalabs.svgandroid.SVG;
 import com.larvalabs.svgandroid.SVGParser;
 
@@ -322,7 +324,8 @@ public class LibArchivosUtil {
     public static void openFileOrDownload(final Context context, String uri, String conexion,String token,final String dir, String id,final String nombre) {
 
         File file = new File(dir);
-
+        final LibDialogLisener progressDialogIntentArchivo = LibDialogUtil.showProgressDialog(context, "Por favor espere...");
+        progressDialogIntentArchivo.showDialog();
         MimeTypeMap map = MimeTypeMap.getSingleton();
         String extension = MimeTypeMap.getFileExtensionFromUrl(file.getName());
         String type = map.getMimeTypeFromExtension(extension);
@@ -351,11 +354,12 @@ public class LibArchivosUtil {
                         e.printStackTrace();
                     }
 
-
+                    progressDialogIntentArchivo.hideDialog();
                 }
 
                 @Override
                 public void onError(Throwable e) {
+                    progressDialogIntentArchivo.hideDialog();
 
                 }
             });

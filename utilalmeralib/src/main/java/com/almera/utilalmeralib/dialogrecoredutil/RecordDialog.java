@@ -55,7 +55,6 @@ public class RecordDialog {
             @Override
             public boolean onTouch(View view, MotionEvent motionEvent) {
                 if (motionEvent.getAction() == MotionEvent.ACTION_DOWN) {
-
                     mediaRecorder = new MediaRecorder();
                     mediaRecorder.setAudioSource(MediaRecorder.AudioSource.MIC);
                     mediaRecorder.setOutputFormat(MediaRecorder.OutputFormat.MPEG_4);

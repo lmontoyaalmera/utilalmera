@@ -16,5 +16,12 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.022" />
+    <Button
+        android:id="@+id/recored"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/picassogetter"
+        android:text="dialogoRecored"
+        />
 
 </android.support.constraint.ConstraintLayout>
