@@ -4,7 +4,7 @@
   
 
 [![N|Solid](https://www.almeraim.com/wp-content/uploads/2017/07/logoalmera.png)](https://nodesource.com/products/nsolid)
-
+[![](https://jitpack.io/v/gfigueroaalmera/utilalmera.svg)](https://jitpack.io/#gfigueroaalmera/utilalmera)
   
 Libreria con los metodos util que se utilizan en todas las aplicaciones.
 
