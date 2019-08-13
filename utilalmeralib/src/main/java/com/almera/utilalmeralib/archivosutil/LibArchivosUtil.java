@@ -2,9 +2,11 @@ package com.almera.utilalmeralib.archivosutil;
 
 import android.app.Activity;
 import android.app.DownloadManager;
+import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.Resources;
+import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
@@ -12,6 +14,7 @@ import android.graphics.drawable.Drawable;
 import android.graphics.drawable.PictureDrawable;
 import android.net.Uri;
 import android.os.AsyncTask;
+import android.provider.MediaStore;
 import android.support.v4.content.FileProvider;
 import android.support.v7.widget.AppCompatTextView;
 import android.text.Html;
@@ -411,6 +414,41 @@ public class LibArchivosUtil {
         }
         return correcto;
 
+    }
+    public static int getIdLastPhoto(Context context) {
+        final String[] imageColumns = {MediaStore.Images.Media._ID, MediaStore.Images.Media.DATA};
+        final String imageOrderBy = MediaStore.Images.Media._ID + " DESC";
+        Cursor imageCursor = context.getContentResolver().query(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, imageColumns, null, null, imageOrderBy);
+        if (imageCursor.moveToFirst()) {
+            int id = imageCursor.getInt(imageCursor.getColumnIndex(MediaStore.Images.Media._ID));
+            String fullPath = imageCursor.getString(imageCursor.getColumnIndex(MediaStore.Images.Media.DATA));
+            //Log.d("GF", "getLastImageId::id " + id);
+            Log.d("GF", "getLastImageId::path " + fullPath);
+            imageCursor.close();
+            return id;
+        } else {
+            return 0;
+        }
+    }
+    public static String getRealPathLastPhoto(Context context) {
+        final String[] imageColumns = {MediaStore.Images.Media._ID, MediaStore.Images.Media.DATA};
+        final String imageOrderBy = MediaStore.Images.Media._ID + " DESC";
+        Cursor imageCursor = context.getContentResolver().query(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, imageColumns, null, null, imageOrderBy);
+        if (imageCursor.moveToFirst()) {
+            int id = imageCursor.getInt(imageCursor.getColumnIndex(MediaStore.Images.Media._ID));
+            String fullPath = imageCursor.getString(imageCursor.getColumnIndex(MediaStore.Images.Media.DATA));
+            //Log.d("GF", "getLastImageId::id " + id);
+            Log.d("GF", "getLastImageId::path " + fullPath);
+            imageCursor.close();
+            return fullPath;
+        } else {
+            return "";
+        }
+    }
+
+    private static  void removeImage(Context context,int id) {
+        ContentResolver cr = context.getContentResolver();
+        cr.delete(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, MediaStore.Images.Media._ID + "=?", new String[]{Long.toString(id)});
     }
 
 
