@@ -446,7 +446,7 @@ public class LibArchivosUtil {
         }
     }
 
-    private static  void removeImageFromGallery(Context context,int id) {
+    public static  void removeImageFromGallery(Context context,int id) {
         ContentResolver cr = context.getContentResolver();
         cr.delete(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, MediaStore.Images.Media._ID + "=?", new String[]{Long.toString(id)});
     }
