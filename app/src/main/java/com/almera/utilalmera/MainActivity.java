@@ -1,11 +1,10 @@
 package com.almera.utilalmera;
 
 import android.os.Environment;
-import android.support.v7.app.AppCompatActivity;
+import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.Html;
 import android.text.Spannable;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
@@ -13,14 +12,11 @@ import android.widget.TextView;
 import com.almera.utilalmeralib.archivosutil.LibArchivosUtil;
 import com.almera.utilalmeralib.dialogrecoredutil.RecordDialog;
 import com.almera.utilalmeralib.dialogrecoredutil.RecordLisener;
-import com.almera.utilalmeralib.picasso.ImageDownload;
-import com.almera.utilalmeralib.picasso.LibFinishDowload;
 import com.almera.utilalmeralib.picasso.LibPicassoImageGetter;
-import com.almera.utilalmeralib.picasso.LibPicassoImageDownload;
+import com.almera.utilalmeralib.util_dialogs.LibDialogLisener;
+import com.almera.utilalmeralib.util_dialogs.LibDialogUtil;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.Arrays;
 
 public class MainActivity extends AppCompatActivity {
     private TextView imagenGetter;
@@ -77,6 +73,14 @@ public class MainActivity extends AppCompatActivity {
                 recordDialog.createLoginDialogo().show();
             }
         });
+
+        LibDialogLisener libDialogLisener= LibDialogUtil.showProgressDialog(this,"hoa");
+        libDialogLisener.showDialog();
+        libDialogLisener.changeMessage("asdasd");
+        libDialogLisener.changeMessage("asdasd1");
+        libDialogLisener.changeMessage("asdasd121");
+        libDialogLisener.changeMessage("hola122");
+
     }
 
 }

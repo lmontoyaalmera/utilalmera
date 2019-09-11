@@ -1,6 +1,5 @@
 package com.almera.utilalmeralib.archivosutil;
 
-import android.app.Activity;
 import android.app.DownloadManager;
 import android.content.ContentResolver;
 import android.content.Context;
@@ -15,8 +14,8 @@ import android.graphics.drawable.PictureDrawable;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.provider.MediaStore;
-import android.support.v4.content.FileProvider;
-import android.support.v7.widget.AppCompatTextView;
+import androidx.core.content.FileProvider;
+import androidx.appcompat.widget.AppCompatTextView;
 import android.text.Html;
 import android.text.Spannable;
 import android.util.Base64;

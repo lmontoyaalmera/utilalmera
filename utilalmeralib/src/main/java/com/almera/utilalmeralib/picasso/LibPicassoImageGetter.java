@@ -1,30 +1,19 @@
 package com.almera.utilalmeralib.picasso;
 
 import android.app.Activity;
-import android.content.Context;
-import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
-import android.net.Uri;
-import android.support.v4.content.FileProvider;
+
+import androidx.core.content.FileProvider;
 import android.text.Html;
 import android.util.DisplayMetrics;
-import android.view.View;
-import android.webkit.MimeTypeMap;
 import android.widget.TextView;
 
 import com.almera.utilalmeralib.archivosutil.LibArchivosUtil;
-import com.almera.utilalmeralib.libnetworkutil.LibRxManager;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Target;
-
-import java.io.File;
-import java.io.IOException;
-
-import io.reactivex.observers.DisposableSingleObserver;
-import okhttp3.ResponseBody;
 
 public class LibPicassoImageGetter implements Html.ImageGetter {
 
