@@ -4,6 +4,7 @@ import android.app.ProgressDialog;
 import android.content.Context;
 
 import com.almera.utilalmeralib.R;
+import com.almera.utilalmeralib.viewUtil.LibKeyboardUtil;
 import com.forms.sti.progresslitieigb.Inteface.IProgressLoadingIGB;
 import com.forms.sti.progresslitieigb.Model.JSetting;
 import com.forms.sti.progresslitieigb.ProgressLoadingJIGB;
@@ -28,6 +29,7 @@ public class LibDialogUtil {
             @Override
             public void showDialog() {
                 ProgressLoadingJIGB.startLoading(context);
+                LibKeyboardUtil.hideKeyboard(context);
             }
 
             @Override
