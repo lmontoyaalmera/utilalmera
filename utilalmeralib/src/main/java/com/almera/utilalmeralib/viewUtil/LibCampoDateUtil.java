@@ -18,7 +18,7 @@ import java.util.Date;
 
 public class LibCampoDateUtil {
 
-    public static void editTextFecha(final EditText mDisplayDate, final int resoursesStyle, final Context context, String formato, final Date minima, final Date maxima)  {
+    public static void editTextFecha(final EditText mDisplayDate, final Context context, String formato, final Date minima, final Date maxima)  {
         final SimpleDateFormat formatoDelTexto = new SimpleDateFormat(formato);
         mDisplayDate.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
@@ -43,8 +43,6 @@ public class LibCampoDateUtil {
                     day = cal.get(Calendar.DAY_OF_MONTH);
                     DatePickerDialog dialog = new DatePickerDialog(
                             context,
-                            resoursesStyle,
-                            // android.R.style.Theme_Holo_Light_Dialog_MinWidth,
                             new DatePickerDialog.OnDateSetListener() {
                                 @Override
                                 public void onDateSet(DatePicker datePicker, int year, int month, int day) {
@@ -105,7 +103,6 @@ public class LibCampoDateUtil {
                 day = cal.get(Calendar.DAY_OF_MONTH);
                 DatePickerDialog dialog = new DatePickerDialog(
                        context,
-                        resoursesStyle,
                         // android.R.style.Theme_Holo_Light_Dialog_MinWidth,
                         new DatePickerDialog.OnDateSetListener() {
                             @Override
