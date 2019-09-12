@@ -11,6 +11,8 @@ import android.widget.DatePicker;
 import android.widget.EditText;
 
 
+import com.google.android.material.textfield.TextInputEditText;
+
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -18,7 +20,7 @@ import java.util.Date;
 
 public class LibCampoDateUtil {
 
-    public static void editTextFecha(final EditText mDisplayDate, final Context context, String formato, final Date minima, final Date maxima)  {
+    public static void editTextFecha(final TextInputEditText mDisplayDate, final Context context, String formato, final Date minima, final Date maxima)  {
         final SimpleDateFormat formatoDelTexto = new SimpleDateFormat(formato);
         mDisplayDate.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
