@@ -26,6 +26,7 @@ public class LibDialogUtil {
         AppCompatTextView textView=constraintLayout.findViewById(R.id.textview);
         textView.setText(message);
         build.setView(constraintLayout);
+        build.setCancelable(false);
         Dialog progressDialog=build.create();
         return  new LibDialogLisener() {
             @Override
