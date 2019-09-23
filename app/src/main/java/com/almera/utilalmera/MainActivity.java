@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.Html;
 import android.text.Spannable;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
@@ -12,11 +13,15 @@ import android.widget.TextView;
 import com.almera.utilalmeralib.archivosutil.LibArchivosUtil;
 import com.almera.utilalmeralib.dialogrecoredutil.RecordDialog;
 import com.almera.utilalmeralib.dialogrecoredutil.RecordLisener;
+import com.almera.utilalmeralib.picasso.ImageDownload;
+import com.almera.utilalmeralib.picasso.LibFinishDowload;
 import com.almera.utilalmeralib.picasso.LibPicassoImageGetter;
 import com.almera.utilalmeralib.util_dialogs.LibDialogLisener;
 import com.almera.utilalmeralib.util_dialogs.LibDialogUtil;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.Arrays;
 
 public class MainActivity extends AppCompatActivity {
     private TextView imagenGetter;
@@ -35,14 +40,14 @@ public class MainActivity extends AppCompatActivity {
         recored = findViewById(R.id.recored);
         LibPicassoImageGetter imageGetter = new LibPicassoImageGetter(imagenGetter, MainActivity.this, idiamge);
         //String html1="<p> </p>\r\n\r\n<h1>Hola mundo<\/h1>\r\n\r\n<p><img alt=\"\" src=\"http:\/\/192.168.1.28\/sgi\/tmp\/uploads\/almera_pruebasLOCAL\/download.jpeg\" style=\"width: 284px; height: 177px;\" \/><\/p>\r\n";
-        final String html1 = "<p> </p>\r\n\r\n<h1>Picasso Campos Etiqueta<\\/h1>\r\n\r\n<p><img alt=\"\" src=\"http://192.168.1.193/sgi/tmp/uploads/almera_pruebasLOCAL/download.jpeg\" style=\"width: 284px; height: 177px;\" /></p>\r\n";
-       /* final ImageDownload imageDownload=new ImageDownload(html1,idiamge);
-        LibArchivosUtil.DonwloadPicturesFromHtml(getApplicationContext(), new ArrayList<ImageDownload>(Arrays.asList(imageDownload)), new LibFinishDowload() {
+        final String html1 = "<p> </p>\r\n\r\n<h1>Picasso Campos Etiqueta<\\/h1>\r\n\r\n<p><img alt=\"\" src=\"http://192.168.1.153/sgi/tmp/multimedia/big_9501.svg\" style=\"width: 284px; height: 177px;\" /></p>\r\n";
+        final ImageDownload imageDownload=new ImageDownload(html1,idiamge);
+        LibArchivosUtil.DonwloadPicturesFromHtml(getApplicationContext(), new ArrayList<>(Arrays.asList(imageDownload)), new LibFinishDowload() {
             @Override
             public void onFinish(Boolean status) {
                 Log.d("a", "onFinish: ");
             }
-        });*/
+        });
         Spannable html;
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
             html = (Spannable) Html.fromHtml(html1, Html.FROM_HTML_MODE_LEGACY, imageGetter, null);
@@ -74,12 +79,12 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        LibDialogLisener libDialogLisener= LibDialogUtil.showProgressDialog(this,"hoa");
+       /* LibDialogLisener libDialogLisener= LibDialogUtil.showProgressDialog(this,"hoa");
         libDialogLisener.showDialog();
         libDialogLisener.changeMessage("asdasd");
         libDialogLisener.changeMessage("asdasd1");
         libDialogLisener.changeMessage("asdasd121");
-        libDialogLisener.changeMessage("hola122");
+        libDialogLisener.changeMessage("hola122");*/
 
     }
 

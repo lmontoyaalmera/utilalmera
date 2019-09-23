@@ -36,6 +36,7 @@ import com.almera.utilalmeralib.picasso.LibPicassoImageDownload;
 import com.almera.utilalmeralib.util_dialogs.LibDialogLisener;
 import com.almera.utilalmeralib.util_dialogs.LibDialogUtil;
 import com.larvalabs.svgandroid.SVG;
+import com.larvalabs.svgandroid.SVGParseException;
 import com.larvalabs.svgandroid.SVGParser;
 
 import org.apache.commons.io.FileUtils;
@@ -148,7 +149,6 @@ public class LibArchivosUtil {
         } else {
             saveImage(context, downloadImageBitmap(url), filename);
         }
-
     }
 
     // files are saved to /data/data/com.codexpedia.picassosaveimage/files
@@ -158,6 +158,25 @@ public class LibArchivosUtil {
             try {
                 foStream = context.openFileOutput(imageName, Context.MODE_PRIVATE);
                 b.compress(Bitmap.CompressFormat.PNG, 100, foStream);
+                foStream.close();
+            } catch (Exception e) {
+                Log.d("saveImage", "Exception 2, Something went wrong!");
+                e.printStackTrace();
+            }
+        }
+    }
+    // files are saved to /data/data/com.codexpedia.picassosaveimage/files
+    public static void saveFile(Context context, InputStream b, String imageName) {
+        if(b!=null) {
+            FileOutputStream foStream;
+            try {
+                foStream = context.openFileOutput(imageName, Context.MODE_PRIVATE);
+                byte[] buffer = new byte[1024];
+                int len1 = 0;
+                while ( (len1 = b.read(buffer)) > 0 ) {
+                    foStream.write(buffer);
+                }
+                foStream.close();
                 foStream.close();
             } catch (Exception e) {
                 Log.d("saveImage", "Exception 2, Something went wrong!");
@@ -208,6 +227,8 @@ public class LibArchivosUtil {
             canvas.drawPicture(((PictureDrawable) drawable).getPicture());
 
         } catch (IOException e) {
+            e.printStackTrace();
+        }catch (SVGParseException e) {
             e.printStackTrace();
         }
         return bm;
