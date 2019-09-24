@@ -348,7 +348,6 @@ public class LibArchivosUtil {
 
         File file = new File(context.getCacheDir(),dir);
         final LibDialogLisener progressDialogIntentArchivo = LibDialogUtil.showProgressDialog(context, "Por favor espere...");
-        progressDialogIntentArchivo.showDialog();
         MimeTypeMap map = MimeTypeMap.getSingleton();
         String extension = MimeTypeMap.getFileExtensionFromUrl(file.getName());
         String type = map.getMimeTypeFromExtension(extension);
@@ -358,6 +357,8 @@ public class LibArchivosUtil {
         if (file.exists()) {
             openFileWithIntent(context, context.getCacheDir()+"/"+dir);
         } else {
+            progressDialogIntentArchivo.showDialog();
+
             final String finalType = type;
             LibRxManager rxManager = new LibRxManager( uri);
             rxManager.descargarArchivo(id,conexion,token, new DisposableSingleObserver<ResponseBody>() {
