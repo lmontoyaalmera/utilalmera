@@ -346,7 +346,7 @@ public class LibArchivosUtil {
 
     public static void openFileOrDownload(final Context context, String uri, String conexion,String token,final String dir, String id,final String nombre) {
 
-        File file = new File(dir);
+        File file = new File(context.getCacheDir(),dir);
         final LibDialogLisener progressDialogIntentArchivo = LibDialogUtil.showProgressDialog(context, "Por favor espere...");
         progressDialogIntentArchivo.showDialog();
         MimeTypeMap map = MimeTypeMap.getSingleton();
