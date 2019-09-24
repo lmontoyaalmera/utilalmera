@@ -356,7 +356,7 @@ public class LibArchivosUtil {
         if (type == null)
             type = "*/*";
         if (file.exists()) {
-            openFileWithIntent(context, dir);
+            openFileWithIntent(context, context.getCacheDir()+"/"+dir);
         } else {
             final String finalType = type;
             LibRxManager rxManager = new LibRxManager( uri);
