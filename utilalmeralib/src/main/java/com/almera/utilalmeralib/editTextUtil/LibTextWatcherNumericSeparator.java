@@ -4,6 +4,8 @@ import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.text.method.DigitsKeyListener;
+import android.util.Log;
+import android.view.View;
 import android.widget.EditText;
 
 import androidx.annotation.Nullable;
@@ -23,6 +25,7 @@ public class LibTextWatcherNumericSeparator implements TextWatcher {
     public Locale locale = new Locale("es", "CO");
     public int decimalDigits = 2;
     int seleccion = 0;
+    int previusSelection = 0;
     int adicion;
     private char GROUPING_SEPARATOR = ' ';
     private char DECIMAL_SEPARATOR = '.';
@@ -49,6 +52,12 @@ public class LibTextWatcherNumericSeparator implements TextWatcher {
         this.DECIMAL_SEPARATOR = decimalSeparator;
         this.observerValue = observerValue;
         this.editText.setKeyListener(DigitsKeyListener.getInstance(typeInput));
+        editText.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Log.d("EditTextSelection", "onClick: " + editText.getSelectionEnd());
+            }
+        });
         reload();
     }
 
@@ -60,6 +69,14 @@ public class LibTextWatcherNumericSeparator implements TextWatcher {
 
     @Override
     public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+        previusSelection = seleccion;
+        if (count > before) {
+            seleccion = (start + count);
+        } else {
+            seleccion = (start - before) + 1;
+        }
+        Log.d("seleccion", "beforeTextChanged: " + seleccion);
 
     }
 
@@ -123,12 +140,16 @@ public class LibTextWatcherNumericSeparator implements TextWatcher {
 
 
         // If only decimal separator is inputted, add a zero to the left of it
-        if (text.indexOf(String.valueOf(DECIMAL_SEPARATOR)) == 0) {
+      /*  if (text.indexOf(String.valueOf(DECIMAL_SEPARATOR)) == 0) {
             text = '0' + text;
-        }
+        }*/
 
         setTextInternal(format(text));
-        editText.setSelection(editText.getText().length());
+        try {
+            editText.setSelection(seleccion + adicion);
+        } catch (Exception e) {
+            editText.setSelection(editText.getText().length());
+        }
         handleNumericValueChanged();
         notifiChangeValue();
 
@@ -193,7 +214,11 @@ public class LibTextWatcherNumericSeparator implements TextWatcher {
     }
 
 
-    private String format(final String original) {
+    private String format(String original) {
+        int lon1 = original.length();
+        if (original.indexOf(String.valueOf(DECIMAL_SEPARATOR)) == 0) {
+            original = '0' + original;
+        }
         String[] parts = splitOriginalText(original);
         String number = parts[0].replaceAll(mNumberFilterRegex, "").replaceFirst(LEADING_ZERO_FILTER_REGEX, "");
 
@@ -204,13 +229,16 @@ public class LibTextWatcherNumericSeparator implements TextWatcher {
             parts[1] = parts[1].replaceAll(mNumberFilterRegex, "");
             number += DECIMAL_SEPARATOR + parts[1];
         }
+
         if (number.indexOf("-" + GROUPING_SEPARATOR) == 0) {
             number = number.replaceFirst("-" + GROUPING_SEPARATOR, "-");
         }
         if (number.indexOf("-" + DECIMAL_SEPARATOR) == 0) {
             number = number.replaceFirst("-" + DECIMAL_SEPARATOR, "-0" + DECIMAL_SEPARATOR);
         }
-
+        int concurrentseleccion = editText.getSelectionEnd();
+        int lon2 = number.length();
+        adicion = lon2 - lon1;
         return number;
     }
 
