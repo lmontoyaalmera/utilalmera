@@ -6,6 +6,22 @@
     android:layout_height="match_parent"
     tools:context=".MainActivity">
 
+    <Button
+        android:id="@+id/recored"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="dialogoRecored"
+        app:layout_constraintTop_toBottomOf="@id/picassogetter" />
+
+    <EditText
+        android:id="@+id/editTextprueba"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="20dp"
+        android:hint="prueba"
+        android:inputType="number|numberSigned|numberDecimal"
+        app:layout_constraintTop_toBottomOf="@id/recored"></EditText>
+
     <TextView
         android:id="@+id/picassogetter"
         android:layout_width="match_parent"
@@ -16,12 +32,5 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.022" />
-    <Button
-        android:id="@+id/recored"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:layout_constraintTop_toBottomOf="@id/picassogetter"
-        android:text="dialogoRecored"
-        />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -1,37 +1,67 @@
 package com.almera.utilalmera;
 
-import android.os.Environment;
-import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
+import android.os.Environment;
 import android.text.Html;
 import android.text.Spannable;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.TextView;
+
+import androidx.appcompat.app.AppCompatActivity;
 
 import com.almera.utilalmeralib.archivosutil.LibArchivosUtil;
 import com.almera.utilalmeralib.dialogrecoredutil.RecordDialog;
 import com.almera.utilalmeralib.dialogrecoredutil.RecordLisener;
+import com.almera.utilalmeralib.editTextUtil.LibTextWatcherNumericSeparator;
 import com.almera.utilalmeralib.picasso.ImageDownload;
 import com.almera.utilalmeralib.picasso.LibFinishDowload;
 import com.almera.utilalmeralib.picasso.LibPicassoImageGetter;
-import com.almera.utilalmeralib.util_dialogs.LibDialogLisener;
-import com.almera.utilalmeralib.util_dialogs.LibDialogUtil;
 
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
 
+import io.reactivex.SingleObserver;
+import io.reactivex.disposables.Disposable;
+
 public class MainActivity extends AppCompatActivity {
     private TextView imagenGetter;
     private Button recored;
+    private EditText editTextPrueba;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        picassoGetter();
+        //picassoGetter();
+        bindEditText();
+
+
+    }
+
+
+    public void bindEditText() {
+        editTextPrueba = findViewById(R.id.editTextprueba);
+        editTextPrueba.addTextChangedListener(new LibTextWatcherNumericSeparator(editTextPrueba,
+                ',', '.', 4, "^-+?0123456789,$", new SingleObserver<Double>() {
+            @Override
+            public void onSubscribe(Disposable d) {
+
+            }
+
+            @Override
+            public void onSuccess(Double aDouble) {
+                Log.d("valorEditText", "onSuccess: " + aDouble);
+            }
+
+            @Override
+            public void onError(Throwable e) {
+
+            }
+        }));
     }
 
     public void picassoGetter() {
@@ -41,7 +71,7 @@ public class MainActivity extends AppCompatActivity {
         LibPicassoImageGetter imageGetter = new LibPicassoImageGetter(imagenGetter, MainActivity.this, idiamge);
         //String html1="<p> </p>\r\n\r\n<h1>Hola mundo<\/h1>\r\n\r\n<p><img alt=\"\" src=\"http:\/\/192.168.1.28\/sgi\/tmp\/uploads\/almera_pruebasLOCAL\/download.jpeg\" style=\"width: 284px; height: 177px;\" \/><\/p>\r\n";
         final String html1 = "<p> </p>\r\n\r\n<h1>Picasso Campos Etiqueta<\\/h1>\r\n\r\n<p><img alt=\"\" src=\"http://192.168.1.153/sgi/tmp/multimedia/big_9501.svg\" style=\"width: 284px; height: 177px;\" /></p>\r\n";
-        final ImageDownload imageDownload=new ImageDownload(html1,idiamge);
+        final ImageDownload imageDownload = new ImageDownload(html1, idiamge);
         LibArchivosUtil.DonwloadPicturesFromHtml(getApplicationContext(), new ArrayList<>(Arrays.asList(imageDownload)), new LibFinishDowload() {
             @Override
             public void onFinish(Boolean status) {
@@ -71,7 +101,7 @@ public class MainActivity extends AppCompatActivity {
                             nombreAudio = (System.currentTimeMillis() / 1000) + ".ogg";
                         }
                         String path_audio = Environment.getExternalStorageDirectory() +
-                                File.separator + "/utilalmera/audios"+ File.separator + nombreAudio;
+                                File.separator + "/utilalmera/audios" + File.separator + nombreAudio;
                         LibArchivosUtil.copyFile(url, path_audio);
                     }
                 });
