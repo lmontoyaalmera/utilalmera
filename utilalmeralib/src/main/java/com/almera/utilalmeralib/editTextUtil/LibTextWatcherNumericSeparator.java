@@ -100,7 +100,6 @@ public class LibTextWatcherNumericSeparator implements TextWatcher {
             double value = getNumericValue();
             int entero = (int) value;
             double decimal = value - entero;
-            int suma = 0;
             int longitud = 0;
             if (decimal !=0) {
                 longitud = (value + "").length();
