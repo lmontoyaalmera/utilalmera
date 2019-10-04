@@ -47,7 +47,7 @@ public class MainActivity extends AppCompatActivity {
         editTextPrueba = findViewById(R.id.editTextprueba);
 
         LibTextWatcherNumericSeparator textWatcherNumericSeparator = new LibTextWatcherNumericSeparator(editTextPrueba,
-                ',', '.', 4, "^-+?0123456789,$",5);
+                ',', '.', 0, "^-+?0123456789,$",4);
         textWatcherNumericSeparator.getObservableValueEditTextNumeric().subscribe(new SingleObserver<Double>() {
             @Override
             public void onSubscribe(Disposable d) {

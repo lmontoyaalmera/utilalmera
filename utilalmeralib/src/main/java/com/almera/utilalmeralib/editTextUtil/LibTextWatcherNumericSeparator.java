@@ -101,14 +101,14 @@ public class LibTextWatcherNumericSeparator implements TextWatcher {
             int entero = (int) value;
             double decimal = value - entero;
             int longitud = 0;
-            if (decimal !=0) {
+            if (decimal != 0) {
                 longitud = (value + "").length();
             } else {
                 longitud = (entero + "").length();
 
             }
 
-            if (longitud >= maxLenght) {
+            if (longitud > maxLenght) {
                 validateLock = true;
                 editText.setText(mPreviousText); // cancel change and revert to previous input
                 editText.setSelection(mPreviousText.length());
