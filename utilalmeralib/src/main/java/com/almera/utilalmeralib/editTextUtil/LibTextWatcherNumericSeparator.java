@@ -12,6 +12,7 @@ import androidx.annotation.Nullable;
 import com.almera.utilalmeralib.editTextUtil.exceptions.EmptyStringParseException;
 import com.almera.utilalmeralib.editTextUtil.exceptions.OnlyMinusException;
 
+import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 import java.text.NumberFormat;
 import java.text.ParseException;
@@ -64,7 +65,7 @@ public class LibTextWatcherNumericSeparator implements TextWatcher {
         };
         observableValueEditTextNumeric.subscribeOn(Schedulers.io());
         observableValueEditTextNumeric.observeOn(AndroidSchedulers.mainThread());
-
+        editText.setText("1256");
         reload();
     }
 
@@ -394,6 +395,18 @@ public class LibTextWatcherNumericSeparator implements TextWatcher {
         }
 
         return false;
+    }
+
+    public String doubleToFormat(double value) {
+        DecimalFormatSymbols separadoresPerzonalizados = new DecimalFormatSymbols();
+        separadoresPerzonalizados.setDecimalSeparator(DECIMAL_SEPARATOR);
+        separadoresPerzonalizados.setGroupingSeparator(GROUPING_SEPARATOR);
+        DecimalFormat convertedString = new DecimalFormat("###,###.######", separadoresPerzonalizados);
+        try {
+            return convertedString.format(value);
+        } catch (Exception e) {
+            return "";
+        }
     }
 
 
