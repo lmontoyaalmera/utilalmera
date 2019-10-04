@@ -397,13 +397,13 @@ public class LibTextWatcherNumericSeparator implements TextWatcher {
         return false;
     }
 
-    public String doubleToFormat(double value) {
+    public String doubleToFormat(String value) {
         DecimalFormatSymbols separadoresPerzonalizados = new DecimalFormatSymbols();
         separadoresPerzonalizados.setDecimalSeparator(DECIMAL_SEPARATOR);
         separadoresPerzonalizados.setGroupingSeparator(GROUPING_SEPARATOR);
         DecimalFormat convertedString = new DecimalFormat("###,###.######", separadoresPerzonalizados);
         try {
-            return convertedString.format(value);
+            return convertedString.format(Double.parseDouble(value));
         } catch (Exception e) {
             return "";
         }
