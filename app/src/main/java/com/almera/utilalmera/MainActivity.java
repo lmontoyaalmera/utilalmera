@@ -45,8 +45,10 @@ public class MainActivity extends AppCompatActivity {
 
     public void bindEditText() {
         editTextPrueba = findViewById(R.id.editTextprueba);
-        editTextPrueba.addTextChangedListener(new LibTextWatcherNumericSeparator(editTextPrueba,
-                ',', '.', 4, "^-+?0123456789,$", new SingleObserver<Double>() {
+
+        LibTextWatcherNumericSeparator textWatcherNumericSeparator = new LibTextWatcherNumericSeparator(editTextPrueba,
+                ',', '.', 4, "^-+?0123456789,$",5);
+        textWatcherNumericSeparator.getObservableValueEditTextNumeric().subscribe(new SingleObserver<Double>() {
             @Override
             public void onSubscribe(Disposable d) {
 
@@ -54,14 +56,16 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public void onSuccess(Double aDouble) {
-                Log.d("valorEditText", "onSuccess: " + aDouble);
+                Log.d("observerjaja", "onSuccess: " + aDouble);
+
             }
 
             @Override
             public void onError(Throwable e) {
-
+                Log.d("observerjaja", "onError: " + e.getMessage());
             }
-        }));
+        });
+        editTextPrueba.addTextChangedListener(textWatcherNumericSeparator);
     }
 
     public void picassoGetter() {

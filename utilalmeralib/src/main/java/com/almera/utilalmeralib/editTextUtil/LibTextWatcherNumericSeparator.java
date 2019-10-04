@@ -5,14 +5,17 @@ import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.text.method.DigitsKeyListener;
 import android.util.Log;
-import android.view.View;
 import android.widget.EditText;
 
 import androidx.annotation.Nullable;
 
+import com.almera.utilalmeralib.editTextUtil.exceptions.EmptyStringParseException;
+import com.almera.utilalmeralib.editTextUtil.exceptions.OnlyMinusException;
+
 import java.text.DecimalFormatSymbols;
 import java.text.NumberFormat;
 import java.text.ParseException;
+import java.util.LinkedList;
 import java.util.Locale;
 
 import io.reactivex.Single;
@@ -35,29 +38,33 @@ public class LibTextWatcherNumericSeparator implements TextWatcher {
     private String mNumberFilterRegex;
     private Single<Double> observableValueEditTextNumeric;
     private EditText editText;
-    SingleObserver<Double> observerValue;
+    LinkedList<SingleObserver<? super Double>> observersValue = new LinkedList<>();
     private boolean validateLock = false;
+    private int maxLenght;
 
     /**
      * @param editText         editText
      * @param decimalSeparator
      * @param grupingSeparator thousands separator
      * @param decimalDigits    limit of decimal digits
-     * @param observerValue    observer of the value (Double) of the editText
+     * @param maxLength        len
      */
-    public LibTextWatcherNumericSeparator(EditText editText, @Nullable char decimalSeparator, @Nullable char grupingSeparator, @Nullable int decimalDigits, String typeInput, SingleObserver<Double> observerValue) {
+    public LibTextWatcherNumericSeparator(EditText editText, @Nullable char decimalSeparator, @Nullable char grupingSeparator, @Nullable int decimalDigits, String typeInput, int maxLength) {
         this.editText = editText;
+        this.maxLenght = maxLength;
         this.decimalDigits = decimalDigits;
         this.GROUPING_SEPARATOR = grupingSeparator;
         this.DECIMAL_SEPARATOR = decimalSeparator;
-        this.observerValue = observerValue;
         this.editText.setKeyListener(DigitsKeyListener.getInstance(typeInput));
-        editText.setOnClickListener(new View.OnClickListener() {
+        observableValueEditTextNumeric = new Single<Double>() {
             @Override
-            public void onClick(View v) {
-                Log.d("EditTextSelection", "onClick: " + editText.getSelectionEnd());
+            protected void subscribeActual(SingleObserver<? super Double> observer) {
+                observersValue.add(observer);
             }
-        });
+        };
+        observableValueEditTextNumeric.subscribeOn(Schedulers.io());
+        observableValueEditTextNumeric.observeOn(AndroidSchedulers.mainThread());
+
         reload();
     }
 
@@ -89,11 +96,36 @@ public class LibTextWatcherNumericSeparator implements TextWatcher {
             return;
         }
 
+        try {
+            double value = getNumericValue();
+            int entero = (int) value;
+            double decimal = value - entero;
+            int suma = 0;
+            int longitud = 0;
+            if (decimal !=0) {
+                longitud = (value + "").length();
+            } else {
+                longitud = (entero + "").length();
+
+            }
+
+            if (longitud >= maxLenght) {
+                validateLock = true;
+                editText.setText(mPreviousText); // cancel change and revert to previous input
+                editText.setSelection(mPreviousText.length());
+                validateLock = false;
+                return;
+            }
+        } catch (Exception e) {
+
+        }
+
 
         // If user presses GROUPING_SEPARATOR, convert it to DECIMAL_SEPARATOR
         if (text.endsWith(GROUPING_SEPARATOR + "") || text.endsWith(".") || text.endsWith(",")) {
             text = text.substring(0, text.length() - 1) + DECIMAL_SEPARATOR;
         }
+
 
         // Limit decimal digits
         if (decimalDigitLimitReached(text)) {
@@ -135,7 +167,6 @@ public class LibTextWatcherNumericSeparator implements TextWatcher {
 
         if (text.length() == 0) {
             handleNumericValueCleared();
-            return;
         }
 
 
@@ -157,12 +188,25 @@ public class LibTextWatcherNumericSeparator implements TextWatcher {
 
 
     private void notifiChangeValue() {
-        observableValueEditTextNumeric.just(getNumericValue()).subscribeOn(Schedulers.io()).
-                observeOn(AndroidSchedulers.mainThread()).subscribeWith(observerValue);
+
+
+        try {
+            double value = getNumericValue();
+            for (SingleObserver<? super Double> observer : observersValue) {
+                observer.onSuccess(value);
+            }
+        } catch (Exception e) {
+            for (SingleObserver<? super Double> observer : observersValue) {
+                observer.onError(e);
+            }
+        }
 
 
     }
 
+    public Single<Double> getObservableValueEditTextNumeric() {
+        return observableValueEditTextNumeric;
+    }
 
     public void setDecimalDigits(int decimalDigits) {
         this.decimalDigits = decimalDigits;
@@ -204,12 +248,19 @@ public class LibTextWatcherNumericSeparator implements TextWatcher {
         }
     }
 
-    public double getNumericValue() {
+    public double getNumericValue() throws Exception {
         String original = editText.getText().toString().replace(GROUPING_SEPARATOR + "", "").replace(DECIMAL_SEPARATOR + "", ".");
         try {
+            //this.observerValue.
             return NumberFormat.getInstance().parse(original).doubleValue();
         } catch (ParseException e) {
-            return Double.NaN;
+            if (original.equals("")) {
+                throw new EmptyStringParseException("No se puede parsear la cadena vacia ");
+            } else if (original.equals("-")) {
+                throw new OnlyMinusException("No se puede parsear el signo el caracter - ");
+            } else {
+                throw new Exception("No se puede parsear el signo el caracter - ");
+            }
         }
     }
 
