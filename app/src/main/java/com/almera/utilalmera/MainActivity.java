@@ -56,13 +56,13 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public void onSuccess(Double aDouble) {
-                Log.d("observerjaja", "onSuccess: " + aDouble);
+                Log.d("123", "onSuccess: " + aDouble);
 
             }
 
             @Override
             public void onError(Throwable e) {
-                Log.d("observerjaja", "onError: " + e.getMessage());
+                Log.d("123", "onError: " + e.getMessage());
             }
         });
         editTextPrueba.setText(textWatcherNumericSeparator.doubleToFormat("120.32"));

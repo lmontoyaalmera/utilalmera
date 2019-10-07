@@ -65,7 +65,6 @@ public class LibTextWatcherNumericSeparator implements TextWatcher {
         };
         observableValueEditTextNumeric.subscribeOn(Schedulers.io());
         observableValueEditTextNumeric.observeOn(AndroidSchedulers.mainThread());
-        editText.setText("1256");
         reload();
     }
 
