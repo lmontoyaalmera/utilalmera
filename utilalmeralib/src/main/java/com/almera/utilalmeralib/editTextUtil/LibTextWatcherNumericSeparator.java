@@ -37,9 +37,9 @@ public class LibTextWatcherNumericSeparator implements TextWatcher {
     private String mDefaultText = null;
     private String mPreviousText = "";
     private String mNumberFilterRegex;
-    private Single<Double> observableValueEditTextNumeric;
+    private Single<String> observableValueEditTextNumeric;
     private EditText editText;
-    LinkedList<SingleObserver<? super Double>> observersValue = new LinkedList<>();
+    LinkedList<SingleObserver<? super String>> observersValue = new LinkedList<>();
     private boolean validateLock = false;
     private int maxLenght;
 
@@ -57,9 +57,9 @@ public class LibTextWatcherNumericSeparator implements TextWatcher {
         this.GROUPING_SEPARATOR = grupingSeparator;
         this.DECIMAL_SEPARATOR = decimalSeparator;
         this.editText.setKeyListener(DigitsKeyListener.getInstance(typeInput));
-        observableValueEditTextNumeric = new Single<Double>() {
+        observableValueEditTextNumeric = new Single<String>() {
             @Override
-            protected void subscribeActual(SingleObserver<? super Double> observer) {
+            protected void subscribeActual(SingleObserver<? super String> observer) {
                 observersValue.add(observer);
             }
         };
@@ -190,12 +190,24 @@ public class LibTextWatcherNumericSeparator implements TextWatcher {
 
 
         try {
+            String notificacion = "";
             double value = getNumericValue();
-            for (SingleObserver<? super Double> observer : observersValue) {
-                observer.onSuccess(value);
+            String original = value + "";
+            int indicepunto = original.indexOf('.');
+            if (indicepunto == -1) {
+                notificacion = value + "";
+            }
+            int parteDecimal = Integer.parseInt(original.substring(indicepunto + 1));
+            if (parteDecimal == 0) {
+                notificacion = (int)value + "";
+            } else {
+                notificacion = value + "";
+            }
+            for (SingleObserver<? super String> observer : observersValue) {
+                observer.onSuccess(notificacion);
             }
         } catch (Exception e) {
-            for (SingleObserver<? super Double> observer : observersValue) {
+            for (SingleObserver<? super String> observer : observersValue) {
                 observer.onError(e);
             }
         }
@@ -203,7 +215,7 @@ public class LibTextWatcherNumericSeparator implements TextWatcher {
 
     }
 
-    public Single<Double> getObservableValueEditTextNumeric() {
+    public Single<String> getObservableValueEditTextNumeric() {
         return observableValueEditTextNumeric;
     }
 
@@ -249,6 +261,7 @@ public class LibTextWatcherNumericSeparator implements TextWatcher {
 
     public double getNumericValue() throws Exception {
         String original = editText.getText().toString().replace(GROUPING_SEPARATOR + "", "").replace(DECIMAL_SEPARATOR + "", ".");
+
         try {
             //this.observerValue.
             return NumberFormat.getInstance().parse(original).doubleValue();
@@ -396,6 +409,13 @@ public class LibTextWatcherNumericSeparator implements TextWatcher {
         return false;
     }
 
+    /**
+     * Convierte la cadena recibida por parametro en que debe estar en formato double nativo,
+     * al formato como se le va mostrar al usuario
+     *
+     * @param value
+     * @return
+     */
     public String doubleToFormat(String value) {
         DecimalFormatSymbols separadoresPerzonalizados = new DecimalFormatSymbols();
         separadoresPerzonalizados.setDecimalSeparator(DECIMAL_SEPARATOR);
