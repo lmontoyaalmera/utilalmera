@@ -199,7 +199,7 @@ public class LibTextWatcherNumericSeparator implements TextWatcher {
             }
             int parteDecimal = Integer.parseInt(original.substring(indicepunto + 1));
             if (parteDecimal == 0) {
-                notificacion = (int)value + "";
+                notificacion = (int) value + "";
             } else {
                 notificacion = value + "";
             }
@@ -420,6 +420,25 @@ public class LibTextWatcherNumericSeparator implements TextWatcher {
         DecimalFormatSymbols separadoresPerzonalizados = new DecimalFormatSymbols();
         separadoresPerzonalizados.setDecimalSeparator(DECIMAL_SEPARATOR);
         separadoresPerzonalizados.setGroupingSeparator(GROUPING_SEPARATOR);
+        DecimalFormat convertedString = new DecimalFormat("###,###.######", separadoresPerzonalizados);
+        try {
+            return convertedString.format(Double.parseDouble(value));
+        } catch (Exception e) {
+            return "";
+        }
+    }
+
+
+    /**
+     * @param value
+     * @param decimalSeparator
+     * @param grupingSeparator
+     * @return
+     */
+    public static String doubleToFormat(String value, char decimalSeparator, char grupingSeparator) {
+        DecimalFormatSymbols separadoresPerzonalizados = new DecimalFormatSymbols();
+        separadoresPerzonalizados.setDecimalSeparator(decimalSeparator);
+        separadoresPerzonalizados.setGroupingSeparator(grupingSeparator);
         DecimalFormat convertedString = new DecimalFormat("###,###.######", separadoresPerzonalizados);
         try {
             return convertedString.format(Double.parseDouble(value));
