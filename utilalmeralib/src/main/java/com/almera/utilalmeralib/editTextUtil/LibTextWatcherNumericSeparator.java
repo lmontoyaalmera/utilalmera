@@ -12,6 +12,7 @@ import androidx.annotation.Nullable;
 import com.almera.utilalmeralib.editTextUtil.exceptions.EmptyStringParseException;
 import com.almera.utilalmeralib.editTextUtil.exceptions.OnlyMinusException;
 
+import java.math.BigDecimal;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 import java.text.NumberFormat;
@@ -193,15 +194,19 @@ public class LibTextWatcherNumericSeparator implements TextWatcher {
             String notificacion = "";
             double value = getNumericValue();
             String original = value + "";
-            int indicepunto = original.indexOf('.');
-            if (indicepunto == -1) {
-                notificacion = value + "";
-            }
-            int parteDecimal = Integer.parseInt(original.substring(indicepunto + 1));
-            if (parteDecimal == 0) {
-                notificacion = (int) value + "";
+            if (original.contains("E")) {
+                notificacion = BigDecimal.valueOf(value) + "";
             } else {
-                notificacion = value + "";
+                int indicepunto = original.indexOf('.');
+                if (indicepunto == -1) {
+                    notificacion = value + "";
+                }
+                int parteDecimal = Integer.parseInt(original.substring(indicepunto + 1));
+                if (parteDecimal == 0) {
+                    notificacion = (int) value + "";
+                } else {
+                    notificacion = value + "";
+                }
             }
             for (SingleObserver<? super String> observer : observersValue) {
                 observer.onSuccess(notificacion);
