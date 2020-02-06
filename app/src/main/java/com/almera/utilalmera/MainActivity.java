@@ -38,10 +38,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         //picassoGetter();
         bindEditText();
-
-
     }
-
 
     public void bindEditText() {
         editTextPrueba = findViewById(R.id.editTextprueba);
@@ -67,7 +64,7 @@ public class MainActivity extends AppCompatActivity {
         });
 
         editTextPrueba.addTextChangedListener(textWatcherNumericSeparator);
-        editTextPrueba.setText("777777858910");
+        editTextPrueba.setText("7.77777858910E16");//7.777778589106E12
     }
 
     public void picassoGetter() {

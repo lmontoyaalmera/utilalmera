@@ -98,15 +98,24 @@ public class LibTextWatcherNumericSeparator implements TextWatcher {
         }
 
         try {
-            double value = getNumericValue();
-            int entero = (int) value;
-            double decimal = value - entero;
             int longitud = 0;
-            if (decimal != 0) {
-                longitud = (value + "").length();
-            } else {
-                longitud = (entero + "").length();
+            double value = getNumericValue();
+            if ((value + "").matches("[0-9]+([.])?[0-9]+[E][+]?[0-9]+")) {
+                BigDecimal numerogrande = BigDecimal.valueOf(value);
+                Log.d("oeoeoe", "afterTextChanged: " + numerogrande.toBigIntegerExact());
+                longitud = (numerogrande.toBigIntegerExact() + "").length();
 
+            } else {
+
+                int entero = (int) value;
+                double decimal = value - entero;
+
+                if (decimal != 0) {
+                    longitud = (value + "").length();
+                } else {
+                    longitud = (entero + "").length();
+
+                }
             }
 
             if (longitud > maxLenght) {
@@ -265,7 +274,13 @@ public class LibTextWatcherNumericSeparator implements TextWatcher {
     }
 
     public double getNumericValue() throws Exception {
-        String original = editText.getText().toString().replace(GROUPING_SEPARATOR + "", "").replace(DECIMAL_SEPARATOR + "", ".");
+        String original;
+        String edit = editText.getText().toString();
+        if (edit.matches("[0-9]+([.])?[0-9]+[E][+]?[0-9]+")) {
+            original = editText.getText().toString();
+        } else {
+            original = editText.getText().toString().replace(GROUPING_SEPARATOR + "", "").replace(DECIMAL_SEPARATOR + "", ".");
+        }
 
         try {
             //this.observerValue.
@@ -283,31 +298,46 @@ public class LibTextWatcherNumericSeparator implements TextWatcher {
 
 
     private String format(String original) {
-        int lon1 = original.length();
-        if (original.indexOf(String.valueOf(DECIMAL_SEPARATOR)) == 0) {
-            original = '0' + original;
-        }
-        String[] parts = splitOriginalText(original);
-        String number = parts[0].replaceAll(mNumberFilterRegex, "").replaceFirst(LEADING_ZERO_FILTER_REGEX, "");
 
-        number = reverse(reverse(number).replaceAll("(.{3})", "$1" + GROUPING_SEPARATOR));
-        number = removeStart(number, String.valueOf(GROUPING_SEPARATOR));
+        if (!original.matches("[0-9]+([.])?[0-9]+[E][+]?[0-9]+")) {
+            int lon1 = original.length();
+            if (original.indexOf(String.valueOf(DECIMAL_SEPARATOR)) == 0) {
+                original = '0' + original;
+            }
+            String[] parts = splitOriginalText(original);
+            String number = parts[0].replaceAll(mNumberFilterRegex, "").replaceFirst(LEADING_ZERO_FILTER_REGEX, "");
 
-        if (parts.length > 1) {
-            parts[1] = parts[1].replaceAll(mNumberFilterRegex, "");
-            number += DECIMAL_SEPARATOR + parts[1];
-        }
+            number = reverse(reverse(number).replaceAll("(.{3})", "$1" + GROUPING_SEPARATOR));
+            number = removeStart(number, String.valueOf(GROUPING_SEPARATOR));
 
-        if (number.indexOf("-" + GROUPING_SEPARATOR) == 0) {
-            number = number.replaceFirst("-" + GROUPING_SEPARATOR, "-");
+            if (parts.length > 1) {
+                parts[1] = parts[1].replaceAll(mNumberFilterRegex, "");
+                number += DECIMAL_SEPARATOR + parts[1];
+            }
+
+            if (number.indexOf("-" + GROUPING_SEPARATOR) == 0) {
+                number = number.replaceFirst("-" + GROUPING_SEPARATOR, "-");
+            }
+            if (number.indexOf("-" + DECIMAL_SEPARATOR) == 0) {
+                number = number.replaceFirst("-" + DECIMAL_SEPARATOR, "-0" + DECIMAL_SEPARATOR);
+            }
+            int concurrentseleccion = editText.getSelectionEnd();
+            int lon2 = number.length();
+            adicion = lon2 - lon1;
+            return number;
+        } else {
+
+            Locale.setDefault(Locale.US);
+            try {
+                double doubleValue = getNumericValue();
+                DecimalFormat num = new DecimalFormat("###.##");
+                return format(num.format(doubleValue));
+            } catch (Exception e) {
+                return original;
+            }
+
+
         }
-        if (number.indexOf("-" + DECIMAL_SEPARATOR) == 0) {
-            number = number.replaceFirst("-" + DECIMAL_SEPARATOR, "-0" + DECIMAL_SEPARATOR);
-        }
-        int concurrentseleccion = editText.getSelectionEnd();
-        int lon2 = number.length();
-        adicion = lon2 - lon1;
-        return number;
     }
 
     private String[] splitOriginalText(String original) {
@@ -426,6 +456,7 @@ public class LibTextWatcherNumericSeparator implements TextWatcher {
         separadoresPerzonalizados.setDecimalSeparator(DECIMAL_SEPARATOR);
         separadoresPerzonalizados.setGroupingSeparator(GROUPING_SEPARATOR);
         DecimalFormat convertedString = new DecimalFormat("###,###.######", separadoresPerzonalizados);
+
         try {
             return convertedString.format(Double.parseDouble(value));
         } catch (Exception e) {
